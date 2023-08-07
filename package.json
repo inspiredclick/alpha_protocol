@@ -6,7 +6,8 @@
   "scripts": {
     "build": "tsc",
     "test": "jest",
-    "lint": "npx eslint ./src"
+    "lint": "npx eslint ./src",
+    "demo": "npm run build && node ./build/demo.js"
   },
   "keywords": [],
   "author": "",
