@@ -6,7 +6,7 @@ describe('elements', () => {
     describe('text', () => {
         test('should return a number array', () => {
             const output = text('hello');
-            expect(output).toStrictEqual([Chars.MODE_FIELD, DisplayPosition.MIDDLE_LINE, ModeCode.AUTO, Color.RED, 104, 101, 108, 108, 111]);
+            expect(output).toStrictEqual([Chars.MODE_FIELD, DisplayPosition.MIDDLE_LINE, ModeCode.AUTO, Chars.COLOR_FIELD, Color.AUTO, 104, 101, 108, 108, 111]);
         });
     });
 

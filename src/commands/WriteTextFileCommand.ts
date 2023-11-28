@@ -1,4 +1,4 @@
-import { CommandCode, FileLabel } from "../types";
+import { CommandCode, FileLabel, FileLabels } from "../types";
 import { Command } from "./Command";
 
 export class WriteTextFileCommand extends Command {
@@ -7,7 +7,7 @@ export class WriteTextFileCommand extends Command {
 
     constructor(fileLabel?: FileLabel) {
         super();
-        this.fileLabel = fileLabel || FileLabel.A;
+        this.fileLabel = fileLabel || FileLabels.get();
         this.data = [this.fileLabel];
     }
 

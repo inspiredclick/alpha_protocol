@@ -1,7 +1,7 @@
 import {describe, expect, test} from '@jest/globals';
 import { WriteTextFileCommand } from './WriteTextFileCommand';
 import { TransmissionPacketFactory } from '../TransmissionPacketFactory';
-import { Chars, Color, CommandCode, DisplayPosition, FileLabel, ModeCode } from '../types';
+import { Chars, Color, CommandCode, DisplayPosition, FileLabels, ModeCode } from '../types';
 import { text } from '../elements';
 
 describe('WriteTextFileCommand', () => {
@@ -10,7 +10,7 @@ describe('WriteTextFileCommand', () => {
         const packet = new WriteTextFileCommand();
         packet.append(text(helloWorld));
 
-        let data: number[] = [FileLabel.A, Chars.MODE_FIELD, DisplayPosition.MIDDLE_LINE, ModeCode.AUTO, Color.RED];
+        let data: number[] = [FileLabels.get(), Chars.MODE_FIELD, DisplayPosition.MIDDLE_LINE, ModeCode.AUTO, Chars.COLOR_FIELD, Color.AUTO];
         data = data.concat(helloWorld.toByteArray());
         const packetBuffer = TransmissionPacketFactory.createPacketBytes(
             Buffer.from([CommandCode.WRITE_TEXT_FILE]),

@@ -7,7 +7,8 @@
     "build": "tsc",
     "test": "jest",
     "lint": "npx eslint ./src",
-    "demo": "npm run build && node ./build/demo.js"
+    "demo": "npm run build && node ./build/demo.js",
+    "icli": "npm run build && node ./build/icli.js"
   },
   "keywords": [],
   "author": "",
@@ -19,6 +20,7 @@
     "@jest/globals": "^29.6.1",
     "@types/jest": "^29.5.3",
     "@types/node": "^20.4.2",
+    "@types/terminal-kit": "^2.5.4",
     "@typescript-eslint/eslint-plugin": "^6.3.0",
     "@typescript-eslint/parser": "^6.3.0",
     "babel-jest": "^29.6.1",
@@ -30,6 +32,7 @@
   },
   "dependencies": {
     "@serialport/stream": "^11.0.1",
-    "serialport": "^11.0.0"
+    "serialport": "^11.0.0",
+    "terminal-kit": "^3.0.1"
   }
 }
