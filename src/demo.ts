@@ -1,6 +1,6 @@
 import { SerialPort } from "serialport";
 import { SetMemory, MemoryConfig } from "./commands/SetMemory";
-import { WriteTextFileCommand } from "./commands/WriteTextFileCommand";
+import { WriteTextFileCommand } from "./commands/TextFile/WriteTextFileCommand";
 import { SignClient } from "./SignClient";
 import { text } from "./elements";
 import { Color, DisplayPosition, ModeCode } from "./types";

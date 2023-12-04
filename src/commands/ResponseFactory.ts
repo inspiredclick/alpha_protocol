@@ -1,5 +1,6 @@
 import { Chars, CommandCode, TypeCode } from "../types";
-import { GenericResponse, ReadTextFileResponse, Response } from "./Response";
+import { GenericResponse, Response } from "./Response";
+import { ReadTextFileResponse } from "./TextFile/ReadTextFileResponse";
 
 export enum ResponseFactoryErrorCode {
     INVALID_PACKET,

@@ -1,10 +1,11 @@
 import {describe, expect, test} from '@jest/globals';
-import { WriteTextFileCommand } from './WriteTextFileCommand';
+import { WriteTextFileCommand } from './TextFile/WriteTextFileCommand';
 import { TransmissionPacketFactory } from '../TransmissionPacketFactory';
 import { Chars, Color, CommandCode, DisplayPosition, FileLabels, ModeCode, TypeCode } from '../types';
 import { text } from '../elements';
 import { ResponseFactory, ResponseFactoryError, ResponseFactoryErrorCode } from './ResponseFactory';
-import { GenericResponse, ReadTextFileResponse } from './Response';
+import { GenericResponse } from './Response';
+import { ReadTextFileResponse } from './TextFile/ReadTextFileResponse';
 
 /*
 ON DATA

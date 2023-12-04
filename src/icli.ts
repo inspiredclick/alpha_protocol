@@ -5,10 +5,10 @@ import { FileLabel, FileLabels } from "./types";
 import { SerialPort } from "serialport";
 import { SignClient } from "./SignClient";
 import { MemoryConfig, SetMemory } from "./commands/SetMemory";
-import { WriteTextFileCommand } from "./commands/WriteTextFileCommand";
+import { WriteTextFileCommand } from "./commands/TextFile/WriteTextFileCommand";
 import { text } from "./elements";
 import { ReadTextFileCommand } from "./commands/ReadTextFileCommand";
-import { ReadTextFileResponse } from "./commands/Response";
+import { ReadTextFileResponse } from "./commands/TextFile/ReadTextFileResponse";
 
 (async () => {
     term.on('key', (key: string) => {
