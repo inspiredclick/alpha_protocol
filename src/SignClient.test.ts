@@ -1,12 +1,12 @@
 import {afterAll, describe, expect, jest, test} from '@jest/globals';
 import { SignClient } from './SignClient';
-import { SerialPort } from 'serialport';
+import { SerialPort, SerialPortMock } from 'serialport';
 import { TransmissionPacket } from './TransmissionPacket';
 import { CommandCode, FileLabels } from './types';
 import { SerialPortStream } from '@serialport/stream';
-import { MockBinding } from '@serialport/binding-mock';
 import { ReadTextFileResponse } from './commands/TextFile/ReadTextFileResponse';
 import { ReadTextFileCommand } from './commands/ReadTextFileCommand';
+import { MockBinding } from '@serialport/binding-mock';
 
 class TestTransmissionPacket extends TransmissionPacket {
     commandCode: CommandCode = CommandCode.WRITE_TEXT_FILE;
@@ -25,13 +25,28 @@ const samplePacket = [
    52,  4
 ];
 
+const unrecognizedPacket = [
+    0,  0,  0,   0,   0,  4
+];
+
+const malformedPacket = [
+    0,  0,  0,   0,   0,   1,  90,  48, 48,  2, 66, 65,
+    4,  0,  0,   0,   0,   0,   0,   0,  0,  0,  0,  0,
+    0,  0,  0,   0,   0,   0,   0,   0,  0,  0,  0,  0,
+    0,  0,  0,   1,  48,  48,  48,   2, 65, 65, 69, 27, 32, // 69 is not a valid mode code
+  111, 28, 67, 104, 101, 108, 108, 111,  3, 48, 51, 65,
+   52,  4
+];
+
+const openOptions = { path: '/dev/serial1', baudRate: 9600 };
+
 describe('SignClient', () => {
     beforeEach(() => {
-        MockBinding.createPort('/dev/serial1', { echo: true, record: true })
+        SerialPortMock.binding.createPort('/dev/serial1', { echo: false, record: false })
     });
 
     afterEach(() => {
-        MockBinding.reset();
+        SerialPortMock.binding.reset();
     });
 
     test('should connect', async () => {
@@ -66,10 +81,37 @@ describe('SignClient', () => {
 
     test('should send and listen for a response', async () => {
         const signClient = await new SignClient('/dev/serial1', undefined, MockBinding).connect();
-        const port = new SerialPortStream({ binding: MockBinding, path: '/dev/serial1', baudRate: 9600 });
-        port.once('data', () => {
-            port.port?.emitData(Buffer.from(samplePacket));
-        })
+        setTimeout(() => {
+            signClient.serial?.emit('data', Buffer.from(samplePacket));
+        }, 100);
+        const response = await signClient.send(new ReadTextFileCommand(FileLabels.get('A')));
+        expect(response).toBeDefined();
+    });
+
+    test('should send and listen for an unrecognized response', async () => {
+        const signClient = await new SignClient('/dev/serial1', undefined, MockBinding).connect();
+        setTimeout(() => {
+            signClient.serial?.emit('data', Buffer.from(unrecognizedPacket));
+        }, 100);
+        await expect(signClient.send(new TestTransmissionPacket(true))).toBeDefined();
+    });
+
+    test('should send and listen for a malformed packet', async () => {
+        const signClient = await new SignClient('/dev/serial1', undefined, MockBinding).connect();
+        setTimeout(() => {
+            signClient.serial?.emit('data', Buffer.from(malformedPacket));
+        }, 100);
+        await expect(signClient.send(new TestTransmissionPacket(true))).rejects.toThrowError();
+    });
+
+    test('should send and listen for a multi bufferresponse', async () => {
+        const signClient = await new SignClient('/dev/serial1', undefined, MockBinding).connect();
+        setTimeout(() => {
+            signClient.serial?.emit('data', Buffer.from(samplePacket.slice(0, 10)));
+        }, 100);
+        setTimeout(() => {
+            signClient.serial?.emit('data', Buffer.from(samplePacket.slice(10)));
+        }, 110);
         const response = await signClient.send(new ReadTextFileCommand(FileLabels.get('A')));
         expect(response).toBeDefined();
     });

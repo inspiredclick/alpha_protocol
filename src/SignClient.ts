@@ -4,7 +4,6 @@ import { Response } from "./commands/Response";
 import { ResponseFactory, ResponseFactoryError, ResponseFactoryErrorCode } from "./commands/ResponseFactory";
 import { Chars } from "./types";
 import { SerialPortStream } from "@serialport/stream";
-import { MockBinding } from '@serialport/binding-mock';
 import { BindingInterface } from '@serialport/bindings-interface';
 
 export class SignClient {
@@ -64,14 +63,14 @@ export class SignClient {
                             if (err instanceof ResponseFactoryError) {
                                 switch (err.code) {
                                     case ResponseFactoryErrorCode.INVALID_PACKET:
-                                        console.warn(err.message);
+                                        resolve(undefined as unknown as T);
                                         return;
                                 }
                             }
-                            throw err;
+                            reject(err);
+                            return;
                         }
                     }
-                    console.log(buf)
                     buf = Buffer.concat([buf, data]);
                 });
             } 
@@ -95,10 +94,6 @@ export class SignClient {
 
     isOpen(): boolean {
         return this.serial?.isOpen || false;
-    }
-
-    flush() {
-        this.serial?.flush();
     }
 }
 
