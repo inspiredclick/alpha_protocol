@@ -6,6 +6,7 @@ export abstract class TransmissionPacket {
     signAddress: string = "00" 
     abstract commandCode: CommandCode;
     protected data: number[] = [];
+    expectsResponse: boolean = false;
 
     toByteArray(): number[] {
         let packet: number[] = [Chars.NULL, Chars.NULL, Chars.NULL, Chars.NULL, Chars.NULL, Chars.START_OF_HEADER, this.typeCode];

@@ -7,6 +7,8 @@ import { SignClient } from "./SignClient";
 import { MemoryConfig, SetMemory } from "./commands/SetMemory";
 import { WriteTextFileCommand } from "./commands/WriteTextFileCommand";
 import { text } from "./elements";
+import { ReadTextFileCommand } from "./commands/ReadTextFileCommand";
+import { ReadTextFileResponse } from "./commands/Response";
 
 (async () => {
     term.on('key', (key: string) => {
@@ -31,20 +33,30 @@ import { text } from "./elements";
     }));
     await client.send(setMemory);
     term.green('Memory Configured\n\n');
-
     term.bold('AlphaProtocol Interactive CLI\n');
     term('(CTRL+C to Exit)\n\n\n');
     while(true) {
+        client.flush();
         term('Open file:\n')
         
         const files = FileLabels.keys();
         const file = await term.gridMenu(files).promise;
         const fileAddress = FileLabels.get(file.selectedText);
 
+        const readTextFile = new ReadTextFileCommand(fileAddress);
+        let readTextFileResponse: ReadTextFileResponse;
+        try {
+            readTextFileResponse = await client.send<ReadTextFileResponse>(readTextFile);
+        }
+        catch (err) {
+            term.red(`${err}\n\n`);
+            continue;
+        }
+
         term(`File ${file.selectedText} input:`)
         const signText = await term.inputField({
             cancelable: true,
-            default: ""
+            default: readTextFileResponse.text
         }).promise;
 
         if (signText === undefined) {

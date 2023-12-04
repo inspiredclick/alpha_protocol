@@ -92,6 +92,7 @@ export enum Chars {
     START_OF_HEADER = 0x01,
     START_OF_TEXT = 0x02,
     END_OF_TRANSMISSION = 0x04,
+    END_OF_TEXT = 0x03,
     ESCAPE = 0x1B,
     MODE_FIELD = 0x1B,
     COLOR_FIELD = 0x1C,
