@@ -67,7 +67,8 @@ export enum SpecialGraphics {
 }
 
 export enum TypeCode {
-    ALL = 0x5A,
+    ALL = 0x5a,
+    RESPONSE = 0x30,
 }
 
 export enum CommandCode {

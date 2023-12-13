@@ -3,8 +3,10 @@ import { SetMemory, MemoryConfig } from "./commands/SetMemory";
 import { WriteTextFileCommand } from "./commands/TextFile/WriteTextFileCommand";
 import { SignClient } from "./SignClient";
 import { text } from "./elements";
-import { Color, DisplayPosition, ModeCode } from "./types";
+import { Color, DisplayPosition, FileLabels, ModeCode } from "./types";
 import { BeepCommand } from "./commands/Beep";
+import { ReadTextFileCommand } from "./commands/ReadTextFileCommand";
+import { ReadTextFileResponse } from "./commands/TextFile/ReadTextFileResponse";
 
 const comPort = process.argv[2];
 
@@ -27,6 +29,11 @@ const comPort = process.argv[2];
   await client.send(setMemory);
   console.log("Memory configured");
 
+  const readText = new ReadTextFileCommand(FileLabels.get());
+  console.log(Buffer.from(readText.toByteArray()));
+  const readTextResponse = await client.send<ReadTextFileResponse>(readText);
+  console.log(`Read text: ${readTextResponse.text}`);
+
   const writeText = new WriteTextFileCommand();
   writeText.append(text("Hello World"));
   writeText.append(text("Bottom Text", {
@@ -40,5 +47,7 @@ const comPort = process.argv[2];
   const beep = new BeepCommand();
   await client.send(beep);
   console.log("Beep sent");
+
+  process.exit();
 })();
 

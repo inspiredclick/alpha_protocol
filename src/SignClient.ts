@@ -1,10 +1,39 @@
 import { SerialPort } from "serialport";
 import { TransmissionPacket } from "./TransmissionPacket";
 import { Response } from "./commands/Response";
-import { ResponseFactory, ResponseFactoryError, ResponseFactoryErrorCode } from "./commands/ResponseFactory";
+import { ResponseFactory } from "./commands/ResponseFactory";
 import { Chars } from "./types";
 import { SerialPortStream } from "@serialport/stream";
 import { BindingInterface } from '@serialport/bindings-interface';
+import { Transform, TransformCallback } from "stream";
+
+class SignClientResponseParser extends Transform {
+    private readonly PACKET_START_BYTE_COUNT = 20;
+    private readonly PACKET_START = Buffer.from(Array(this.PACKET_START_BYTE_COUNT).fill(Chars.NULL));
+    private dataBuffer: Buffer;
+    private inPacket: boolean = false;
+
+    constructor() {
+        super();
+
+        this.dataBuffer = Buffer.from([]);
+    }
+
+    _transform(chunk: any, encoding: BufferEncoding, callback: TransformCallback): void {
+        this.dataBuffer = Buffer.concat([this.dataBuffer, chunk])
+        if (this.dataBuffer.includes(this.PACKET_START) && !this.inPacket) {
+            const startHeaderIndex = this.dataBuffer.indexOf(Chars.START_OF_HEADER);
+            this.dataBuffer = this.dataBuffer.subarray(startHeaderIndex - this.PACKET_START_BYTE_COUNT);
+            this.inPacket = true;
+        }
+        else if (this.dataBuffer.includes(Chars.END_OF_TRANSMISSION) && this.inPacket) {
+            this.push(this.dataBuffer);
+            this.dataBuffer = Buffer.from([]);
+            this.inPacket = false;
+        }
+        callback();
+    }
+}
 
 export class SignClient {
     private readonly DEFAULT_BAUD_RATE = 9600;
@@ -16,7 +45,7 @@ export class SignClient {
 
     private binding?: BindingInterface;
     private timeout?: NodeJS.Timeout;
-    signClient: any;
+    parser?: SignClientResponseParser;
 
     constructor(comPort: string, baudRate?: number, binding?: BindingInterface) {
         this.comPort = comPort;
@@ -36,9 +65,11 @@ export class SignClient {
                     reject(err); 
                     return; 
                 }
+                this.parser = this.serial?.pipe(new SignClientResponseParser());
                 resolve(this);
                 return;
             });
+            
         });
     }
 
@@ -47,31 +78,23 @@ export class SignClient {
             if (this.serial === undefined) { 
                 throw new Error("Serial port is not open");
             }
-            let buf = Buffer.from([]);
             if (packet.expectsResponse) {
-                this.serial.on('data', (data) => {
-                    if (data[data.length-1] === Chars.END_OF_TRANSMISSION) {
-                        buf = Buffer.concat([buf, data]);
-                        if (this.timeout !== undefined) { clearTimeout(this.timeout); }
-                        try {
-                            this.serial?.removeAllListeners('data');
-                            resolve(ResponseFactory.parse(buf) as T);
-                            return;
-                        }
-                        catch (err) {
-                            this.serial?.removeAllListeners('data');
-                            if (err instanceof ResponseFactoryError) {
-                                switch (err.code) {
-                                    case ResponseFactoryErrorCode.INVALID_PACKET:
-                                        resolve(undefined as unknown as T);
-                                        return;
-                                }
-                            }
-                            reject(err);
-                            return;
-                        }
+                const responseListener = this.parser?.on('data', async (data) => {
+                    responseListener?.removeAllListeners();
+                    clearTimeout(this.timeout as NodeJS.Timeout);
+                    this.timeout = undefined;
+                    try {
+                        const response = await ResponseFactory.parse(data);
+                        resolve(response as T);
                     }
-                    buf = Buffer.concat([buf, data]);
+                    catch (err) {
+                        reject(err)
+                    }
+                    // resolve( as unknown as T)
+                });
+                const errorListener = this.parser?.on('error', (err) => {
+                    errorListener?.removeAllListeners();
+                    reject(err);
                 });
             } 
             this.serial.write(packet.toBuffer(), (err) => {

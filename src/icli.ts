@@ -36,7 +36,6 @@ import { ReadTextFileResponse } from "./commands/TextFile/ReadTextFileResponse";
     term.bold('AlphaProtocol Interactive CLI\n');
     term('(CTRL+C to Exit)\n\n\n');
     while(true) {
-        client.flush();
         term('Open file:\n')
         
         const files = FileLabels.keys();

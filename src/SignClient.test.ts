@@ -82,7 +82,7 @@ describe('SignClient', () => {
     test('should send and listen for a response', async () => {
         const signClient = await new SignClient('/dev/serial1', undefined, MockBinding).connect();
         setTimeout(() => {
-            signClient.serial?.emit('data', Buffer.from(samplePacket));
+            signClient.parser?.emit('data', Buffer.from(samplePacket));
         }, 100);
         const response = await signClient.send(new ReadTextFileCommand(FileLabels.get('A')));
         expect(response).toBeDefined();
@@ -91,7 +91,7 @@ describe('SignClient', () => {
     test('should send and listen for an unrecognized response', async () => {
         const signClient = await new SignClient('/dev/serial1', undefined, MockBinding).connect();
         setTimeout(() => {
-            signClient.serial?.emit('data', Buffer.from(unrecognizedPacket));
+            signClient.parser?.emit('data', Buffer.from(unrecognizedPacket));
         }, 100);
         await expect(signClient.send(new TestTransmissionPacket(true))).toBeDefined();
     });
@@ -99,7 +99,7 @@ describe('SignClient', () => {
     test('should send and listen for a malformed packet', async () => {
         const signClient = await new SignClient('/dev/serial1', undefined, MockBinding).connect();
         setTimeout(() => {
-            signClient.serial?.emit('data', Buffer.from(malformedPacket));
+            signClient.parser?.emit('data', Buffer.from(malformedPacket));
         }, 100);
         await expect(signClient.send(new TestTransmissionPacket(true))).rejects.toThrowError();
     });
@@ -107,10 +107,10 @@ describe('SignClient', () => {
     test('should send and listen for a multi bufferresponse', async () => {
         const signClient = await new SignClient('/dev/serial1', undefined, MockBinding).connect();
         setTimeout(() => {
-            signClient.serial?.emit('data', Buffer.from(samplePacket.slice(0, 10)));
+            signClient.parser?.emit('data', Buffer.from(samplePacket.slice(0, 10)));
         }, 100);
         setTimeout(() => {
-            signClient.serial?.emit('data', Buffer.from(samplePacket.slice(10)));
+            signClient.parser?.emit('data', Buffer.from(samplePacket.slice(10)));
         }, 110);
         const response = await signClient.send(new ReadTextFileCommand(FileLabels.get('A')));
         expect(response).toBeDefined();
