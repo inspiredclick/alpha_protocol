@@ -2,7 +2,7 @@ import { SerialPort } from "serialport";
 import { SetMemory, MemoryConfig } from "./commands/SetMemory";
 import { WriteTextFileCommand } from "./commands/TextFile/WriteTextFileCommand";
 import { SignClient } from "./SignClient";
-import { text } from "./elements";
+import { html, text } from "./elements";
 import { Color, DisplayPosition, FileLabels, ModeCode } from "./types";
 import { BeepCommand } from "./commands/Beep";
 import { ReadTextFileCommand } from "./commands/ReadTextFileCommand";
@@ -30,18 +30,25 @@ const comPort = process.argv[2];
   console.log("Memory configured");
 
   const readText = new ReadTextFileCommand(FileLabels.get());
-  console.log(Buffer.from(readText.toByteArray()));
   const readTextResponse = await client.send<ReadTextFileResponse>(readText);
-  console.log(`Read text: ${readTextResponse.text}`);
 
-  const writeText = new WriteTextFileCommand();
-  writeText.append(text("Hello World"));
-  writeText.append(text("Bottom Text", {
+  const writeFileA = new WriteTextFileCommand();
+  writeFileA.append(text("Hello World               ", {
+    displayPosition: DisplayPosition.TOP_LINE,
+    modeCode: ModeCode.SCROLL,
+    color: Color.RAINBOW_1,
+  }));
+  writeFileA.append(text("This is a demo of the Alpha 2.0 Protocol on an Alpha 4041C device", {
     displayPosition: DisplayPosition.BOTTOM_LINE,
-    modeCode: ModeCode.HOLD,
+    modeCode: ModeCode.SCROLL,
     color: Color.RED,
   }));
-  await client.send(writeText);
+  await client.send(writeFileA);
+  console.log("Text written");
+  
+  const writeFileB = new WriteTextFileCommand(FileLabels.get("B"));
+  writeFileB.append(html("<message position=\"middle_line\">File B</message>"));
+  await client.send(writeFileB);
   console.log("Text written");
 
   const beep = new BeepCommand();

@@ -1,5 +1,6 @@
 import { Chars, Color, DisplayPosition, ModeCode } from './types'
 import './string'
+import { TagParser } from './TagParser';
 
 export function text(text: string, config?: {displayPosition?: DisplayPosition, modeCode?: ModeCode, color?: Color}): number[] {
     let output:number[] = [];
@@ -13,6 +14,10 @@ export function text(text: string, config?: {displayPosition?: DisplayPosition, 
     output.push(color);
     output = output.concat(text.toByteArray());
     return output;
+}
+
+export function html(text: string, config?: {displayPosition?: DisplayPosition, modeCode?: ModeCode, color?: Color}): number[] {
+    return TagParser.parse(text);
 }
 
 // export function icon(icon: SpecialGraphics, config?: {displayPosition?: DisplayPosition, color?: Color}): number[] {
