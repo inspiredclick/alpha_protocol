@@ -46,14 +46,14 @@ export enum ModeCode {
     ROLL_IN = 0x70,
     ROLL_OUT = 0x71,
     WIPE_UP = 0x69,
-    WIPE_DOWN = 0x6A,
-    WIPE_LEFT = 0x6B,
-    WIPE_RIGHT = 0x6C,
+    WIPE_DOWN = 0x6a,
+    WIPE_LEFT = 0x6b,
+    WIPE_RIGHT = 0x6c,
     WIPE_IN = 0x72,
     WIPE_OUT = 0x73,
-    TWO_LINE_SCROLL = 0x6D,
-    AUTO = 0x6F,
-    SPECIAL = 0x6E,
+    TWO_LINE_SCROLL = 0x6d,
+    AUTO = 0x6f,
+    SPECIAL = 0x6e,
 }
 
 export enum SpecialGraphics {
