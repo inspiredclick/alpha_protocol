@@ -37,20 +37,22 @@ class SignClientResponseParser extends Transform {
 
 export class SignClient {
     private readonly DEFAULT_BAUD_RATE = 9600;
-    private readonly TIMEOUT = 5000;
+    private readonly DEFAULT_TIMEOUT = 5000;
 
-    serial?: SerialPortStream;
     comPort: string;
     baudRate: number;
-
-    private binding?: BindingInterface;
-    private timeout?: NodeJS.Timeout;
+    serial?: SerialPortStream;
     parser?: SignClientResponseParser;
 
-    constructor(comPort: string, baudRate?: number, binding?: BindingInterface) {
+    private binding?: BindingInterface;
+    private timeoutMs: number = this.DEFAULT_TIMEOUT;
+    private timeout?: NodeJS.Timeout;
+
+    constructor(comPort: string, baudRate?: number, binding?: BindingInterface, timeout?: number) {
         this.comPort = comPort;
         this.baudRate = baudRate || this.DEFAULT_BAUD_RATE;
         this.binding = binding;
+        this.timeoutMs = timeout || this.DEFAULT_TIMEOUT;
     }
 
     async connect(): Promise<SignClient> {
@@ -88,9 +90,8 @@ export class SignClient {
                         resolve(response as T);
                     }
                     catch (err) {
-                        reject(err)
+                        reject(err);
                     }
-                    // resolve( as unknown as T)
                 });
                 const errorListener = this.parser?.on('error', (err) => {
                     errorListener?.removeAllListeners();
@@ -105,7 +106,7 @@ export class SignClient {
                         this.serial?.removeAllListeners('data');
                         reject("Timeout");
                         return;
-                    }, this.TIMEOUT);
+                    }, this.timeoutMs);
                     return; 
                 }
 

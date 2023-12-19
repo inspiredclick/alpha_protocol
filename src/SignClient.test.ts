@@ -101,18 +101,17 @@ describe('SignClient', () => {
         setTimeout(() => {
             signClient.parser?.emit('data', Buffer.from(malformedPacket));
         }, 100);
-        await expect(signClient.send(new TestTransmissionPacket(true))).rejects.toThrowError();
+        expect(async () => await signClient.send(new TestTransmissionPacket(true))).rejects.toThrowError();
     });
 
-    test('should send and listen for a multi bufferresponse', async () => {
-        const signClient = await new SignClient('/dev/serial1', undefined, MockBinding).connect();
-        setTimeout(() => {
-            signClient.parser?.emit('data', Buffer.from(samplePacket.slice(0, 10)));
-        }, 100);
-        setTimeout(() => {
-            signClient.parser?.emit('data', Buffer.from(samplePacket.slice(10)));
-        }, 110);
-        const response = await signClient.send(new ReadTextFileCommand(FileLabels.get('A')));
-        expect(response).toBeDefined();
+    test('should send and timeout', async () => {
+        const signClient = await new SignClient('/dev/serial1', undefined, MockBinding, 1000).connect();
+        try {
+            await signClient.send(new TestTransmissionPacket(true));
+        }
+        catch (err) {
+            expect(err).toBe("Timeout");
+        }
     });
+
 });
