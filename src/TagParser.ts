@@ -18,7 +18,7 @@ export class TagParser {
     private static readonly supportedTags = ['message'];
     
     public static parse(html: string): number[] {
-        let arr: number[] = [];
+        let data: number[] = [];
         let match: RegExpExecArray | null;
         while ((match = this.tagRegex.exec(html)) !== null) {
             const [, tagName, attributes, content] = match;
@@ -47,13 +47,13 @@ export class TagParser {
                         break;
                 }
             }
-            arr = arr.concat(text(tag.content, {
+            data = data.concat(text(tag.content, {
                 displayPosition: tag.attributes.displayPosition,
                 modeCode: tag.attributes.mode,
                 color: tag.attributes.color,
             }));
         }
-        return arr;
+        return data;
     }
 
     private static parseDisplayPostition(displayPosition: string): DisplayPosition | undefined {

@@ -5,20 +5,16 @@ describe('TagParser', () => {
     test('should parse basic message to bytes', () => {
         let output = TagParser.parse('<message>hello world</message>');
         expect(output).toEqual([
-            27,  32, 111,  28,  67,
-           104, 101, 108, 108, 111,
-            32, 119, 111, 114, 108,
-           100
+            28,  67, 104, 101, 108, 108, 111,
+            32, 119, 111, 114, 108, 100
         ]);
     });
 
     test('should parse basic message with an unknown attr', () => {
         let output = TagParser.parse('<message weird="ok">hello world</message>');
         expect(output).toEqual([
-            27,  32, 111,  28,  67,
-           104, 101, 108, 108, 111,
-            32, 119, 111, 114, 108,
-           100
+            28,  67, 104, 101, 108, 108, 111,
+            32, 119, 111, 114, 108, 100
         ]);
     });
 
@@ -49,7 +45,7 @@ describe('TagParser', () => {
 
         output = TagParser.parse('<message position="blarg">hello world</message>');
         position = output[1];
-        expect(position).toEqual(DisplayPosition.MIDDLE_LINE);
+        expect(position).toEqual(Color.AUTO); // Should be Color.AUTO because the position will be undefined and ommited
     });
 
     test('should parse basic message with a mode', () => {
@@ -131,60 +127,60 @@ describe('TagParser', () => {
 
         output = TagParser.parse('<message mode="null">hello world</message>');
         mode = output[2];
-        expect(mode).toEqual(ModeCode.AUTO);
+        expect(mode).toEqual(104); // Should be "h" because the mode will be undefined and ommited
     });
 
     test('should parse basic message with a color', () => {
         let output = TagParser.parse('<message color="auto">hello world</message>');
-        let color = output[4];
+        let color = output[1];
         expect(color).toEqual(Color.AUTO);
 
         output = TagParser.parse('<message color="unknown">hello world</message>');
-        color = output[4];
+        color = output[1];
         expect(color).toEqual(Color.AUTO);
 
         output = TagParser.parse('<message color="red">hello world</message>');
-        color = output[4];
+        color = output[1];
         expect(color).toEqual(Color.RED);
 
         output = TagParser.parse('<message color="green">hello world</message>');
-        color = output[4];
+        color = output[1];
         expect(color).toEqual(Color.GREEN);
 
         output = TagParser.parse('<message color="amber">hello world</message>');
-        color = output[4];
+        color = output[1];
         expect(color).toEqual(Color.AMBER);
 
         output = TagParser.parse('<message color="dim_red">hello world</message>');
-        color = output[4];
+        color = output[1];
         expect(color).toEqual(Color.DIM_RED);
 
         output = TagParser.parse('<message color="dim_green">hello world</message>');
-        color = output[4];
+        color = output[1];
         expect(color).toEqual(Color.DIM_GREEN);
 
         output = TagParser.parse('<message color="brown">hello world</message>');
-        color = output[4];
+        color = output[1];
         expect(color).toEqual(Color.BROWN);
 
         output = TagParser.parse('<message color="orange">hello world</message>');
-        color = output[4];
+        color = output[1];
         expect(color).toEqual(Color.ORANGE);
 
         output = TagParser.parse('<message color="yellow">hello world</message>');
-        color = output[4];
+        color = output[1];
         expect(color).toEqual(Color.YELLOW);
 
         output = TagParser.parse('<message color="rainbow_1">hello world</message>');
-        color = output[4];
+        color = output[1];
         expect(color).toEqual(Color.RAINBOW_1);
 
         output = TagParser.parse('<message color="rainbow_2">hello world</message>');
-        color = output[4];
+        color = output[1];
         expect(color).toEqual(Color.RAINBOW_2);
 
         output = TagParser.parse('<message color="color_mix">hello world</message>');
-        color = output[4];
+        color = output[1];
         expect(color).toEqual(Color.COLOR_MIX);
     });
 

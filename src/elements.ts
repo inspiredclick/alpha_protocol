@@ -4,12 +4,13 @@ import { TagParser } from './TagParser';
 
 export function text(text: string, config?: {displayPosition?: DisplayPosition, modeCode?: ModeCode, color?: Color}): number[] {
     let output:number[] = [];
-    const displayPosition = config?.displayPosition || DisplayPosition.MIDDLE_LINE;
-    const modeCode = config?.modeCode || ModeCode.AUTO;
+    if (config?.displayPosition !== undefined || config?.modeCode !== undefined) {
+        output.push(Chars.MODE_FIELD);
+        output.push(config?.displayPosition || DisplayPosition.MIDDLE_LINE);
+        output.push(config?.modeCode || ModeCode.AUTO);
+    }
+
     const color = config?.color || Color.AUTO;
-    output.push(Chars.MODE_FIELD);
-    output.push(displayPosition);
-    output.push(modeCode);
     output.push(Chars.COLOR_FIELD);
     output.push(color);
     output = output.concat(text.toByteArray());

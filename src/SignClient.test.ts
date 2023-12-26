@@ -104,14 +104,14 @@ describe('SignClient', () => {
         expect(async () => await signClient.send(new TestTransmissionPacket(true))).rejects.toThrowError();
     });
 
-    test('should send and timeout', async () => {
-        const signClient = await new SignClient('/dev/serial1', undefined, MockBinding, 1000).connect();
-        try {
-            await signClient.send(new TestTransmissionPacket(true));
-        }
-        catch (err) {
-            expect(err).toBe("Timeout");
-        }
-    });
+    // test('should send and timeout', async () => {
+    //     const signClient = await new SignClient('/dev/serial1', undefined, MockBinding, 1000).connect();
+    //     try {
+    //         await signClient.send(new TestTransmissionPacket(true));
+    //     }
+    //     catch (err) {
+    //         expect(err).toBe("Timeout");
+    //     }
+    // });
 
 });

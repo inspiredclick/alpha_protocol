@@ -10,7 +10,7 @@ describe('WriteTextFileCommand', () => {
         const packet = new WriteTextFileCommand();
         packet.append(text(helloWorld));
 
-        let data: number[] = [FileLabels.get(), Chars.MODE_FIELD, DisplayPosition.MIDDLE_LINE, ModeCode.AUTO, Chars.COLOR_FIELD, Color.AUTO];
+        let data: number[] = [FileLabels.get(), Chars.COLOR_FIELD, Color.AUTO];
         data = data.concat(helloWorld.toByteArray());
         const packetBuffer = TransmissionPacketFactory.createPacketBytes(
             Buffer.from([CommandCode.WRITE_TEXT_FILE]),

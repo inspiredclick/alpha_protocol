@@ -29,20 +29,15 @@ const comPort = process.argv[2];
   await client.send(setMemory);
   console.log("Memory configured");
 
-  const readText = new ReadTextFileCommand(FileLabels.get());
-  const readTextResponse = await client.send<ReadTextFileResponse>(readText);
-
   const writeFileA = new WriteTextFileCommand();
   writeFileA.append(text("Hello World               ", {
     displayPosition: DisplayPosition.TOP_LINE,
-    modeCode: ModeCode.SCROLL,
+    modeCode: ModeCode.HOLD,
     color: Color.RAINBOW_1,
   }));
-  writeFileA.append(text("This is a demo of the Alpha 2.0 Protocol on an Alpha 4041C device", {
-    displayPosition: DisplayPosition.BOTTOM_LINE,
-    modeCode: ModeCode.SCROLL,
-    color: Color.RED,
-  }));
+  writeFileA.append(html('<message position="bottom_line" mode="scroll" color="red">This is a</message>'));
+  writeFileA.append(html('<message color="rainbow_1">demo</message>'));
+  writeFileA.append(html('<message color="red">of the Alpha 2.0 Protocol on an Alpha 4140C device</message>'));
   await client.send(writeFileA);
   console.log("Text written");
   
