@@ -7,7 +7,7 @@ import { SignClient } from "./SignClient";
 import { MemoryConfig, SetMemory } from "./commands/SetMemory";
 import { WriteTextFileCommand } from "./commands/TextFile/WriteTextFileCommand";
 import { text } from "./elements";
-import { ReadTextFileCommand } from "./commands/ReadTextFileCommand";
+import { ReadTextFileCommand } from "./commands/TextFile/ReadTextFileCommand";
 import { ReadTextFileResponse } from "./commands/TextFile/ReadTextFileResponse";
 
 (async () => {

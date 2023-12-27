@@ -1,8 +1,8 @@
 import {describe, expect, test} from '@jest/globals';
 import { WriteTextFileCommand } from './WriteTextFileCommand';
-import { TransmissionPacketFactory } from '../TransmissionPacketFactory';
-import { Chars, Color, CommandCode, DisplayPosition, FileLabels, ModeCode } from '../types';
-import { text } from '../elements';
+import { TransmissionPacketFactory } from '../../TransmissionPacketFactory';
+import { Chars, Color, CommandCode, DisplayPosition, FileLabels, ModeCode } from '../../types';
+import { text } from '../../elements';
 
 describe('ReadTextFileCommand', () => {
     test('toBuffer', () => {

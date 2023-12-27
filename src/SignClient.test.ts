@@ -5,7 +5,7 @@ import { TransmissionPacket } from './TransmissionPacket';
 import { CommandCode, FileLabels } from './types';
 import { SerialPortStream } from '@serialport/stream';
 import { ReadTextFileResponse } from './commands/TextFile/ReadTextFileResponse';
-import { ReadTextFileCommand } from './commands/ReadTextFileCommand';
+import { ReadTextFileCommand } from './commands/TextFile/ReadTextFileCommand';
 import { MockBinding } from '@serialport/binding-mock';
 
 class TestTransmissionPacket extends TransmissionPacket {

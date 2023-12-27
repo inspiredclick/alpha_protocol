@@ -1,5 +1,5 @@
-import { CommandCode, FileLabel, FileLabels } from "../types";
-import { Command } from "./Command";
+import { CommandCode, FileLabel, FileLabels } from "../../types";
+import { Command } from "../Command";
 
 export class ReadTextFileCommand extends Command {
     private fileLabel: FileLabel;
