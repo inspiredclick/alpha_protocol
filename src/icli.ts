@@ -4,7 +4,7 @@ import {
 import { FileLabel, FileLabels } from "./types";
 import { SerialPort } from "serialport";
 import { SignClient } from "./SignClient";
-import { MemoryConfig, SetMemory } from "./commands/SetMemory";
+import { MemoryConfig, SetMemory } from "./commands/SpecialFunction/SetMemory";
 import { WriteTextFileCommand } from "./commands/TextFile/WriteTextFileCommand";
 import { text } from "./elements";
 import { ReadTextFileCommand } from "./commands/TextFile/ReadTextFileCommand";

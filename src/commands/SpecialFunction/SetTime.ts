@@ -1,4 +1,4 @@
-import { SpecialFunctionLabel, WriteSpecialFunctionCommand } from "./WriteSpecialFunctionCommand";
+import { SpecialFunctionLabel, WriteSpecialFunctionCommand } from "./SpecialFunctionCommand";
 
 export class SetTime extends WriteSpecialFunctionCommand {
     specialFunctionLabel: SpecialFunctionLabel = SpecialFunctionLabel.SET_TIME;

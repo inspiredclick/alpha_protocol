@@ -1,4 +1,4 @@
-import { SpecialFunctionLabel, WriteSpecialFunctionCommand } from "./WriteSpecialFunctionCommand";
+import { SpecialFunctionLabel, WriteSpecialFunctionCommand } from "./SpecialFunctionCommand";
 
 export enum Day {
     SUNDAY = 0x31,

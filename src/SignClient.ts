@@ -75,7 +75,7 @@ export class SignClient {
         });
     }
 
-    async send<T extends Response>(packet: TransmissionPacket): Promise<T> {
+    async send<T extends TransmissionPacket>(packet: TransmissionPacket): Promise<T> {
         return new Promise<T>((resolve, reject) => {
             if (this.serial === undefined) { 
                 throw new Error("Serial port is not open");

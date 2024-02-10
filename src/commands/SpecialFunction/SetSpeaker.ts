@@ -1,4 +1,4 @@
-import { SpecialFunctionLabel, WriteSpecialFunctionCommand } from "./WriteSpecialFunctionCommand";
+import { SpecialFunctionLabel, WriteSpecialFunctionCommand } from "./SpecialFunctionCommand";
 
 export class SetSpeaker extends WriteSpecialFunctionCommand {
     static readonly ENABLE = 0x30;

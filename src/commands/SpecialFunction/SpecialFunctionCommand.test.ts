@@ -3,9 +3,9 @@ import {SetTime} from './SetTime';
 import {SetSpeaker} from './SetSpeaker';
 import {Day, SetDay} from './SetDay';
 import {KeyboardStatus, MemoryConfig, MemoryLabel, MemoryType, SetMemory} from './SetMemory';
-import { TransmissionPacketFactory } from '../TransmissionPacketFactory';
-import { SpecialFunctionLabel } from './WriteSpecialFunctionCommand';
-import { CommandCode } from '../types';
+import { TransmissionPacketFactory } from '../../TransmissionPacketFactory';
+import { SpecialFunctionLabel } from './SpecialFunctionCommand';
+import { CommandCode } from '../../types';
 
 describe('WriteSpecialFunctionCommand', () => {
     describe('SetTime', () => {

@@ -1,6 +1,15 @@
+import { TransmissionPacket } from "../TransmissionPacket";
 import { Chars, CommandCode, TypeCode } from "../types";
 import { GenericResponse, Response } from "./Response";
 import { ReadTextFileResponse } from "./TextFile/ReadTextFileResponse";
+
+export class GenericPacket extends TransmissionPacket {
+    commandCode: CommandCode = CommandCode.GENERIC;
+    constructor(data: number[]) {
+        super();
+        this.data = data;
+    }
+}
 
 export enum ResponseFactoryErrorCode {
     INVALID_PACKET,
@@ -21,7 +30,7 @@ export class ResponseFactoryError extends Error {
 }
 
 export class ResponseFactory {
-    static parse(buffer: Buffer): Response {
+    static parse(buffer: Buffer): TransmissionPacket {
         let bufArray = Array.from(buffer);
 
         let packetPosition = bufArray.lastIndexOf(Chars.START_OF_HEADER);
@@ -40,7 +49,7 @@ export class ResponseFactory {
                 case CommandCode.WRITE_TEXT_FILE:
                     return new ReadTextFileResponse(bufArray, packetPosition);
                 default:
-                    return new GenericResponse();
+                    return new GenericPacket(bufArray);
             }
         }
         catch (err) {

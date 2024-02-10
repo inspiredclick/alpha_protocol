@@ -1,5 +1,5 @@
-import { CommandCode } from "../types";
-import { SpecialFunctionLabel, WriteSpecialFunctionCommand } from "./WriteSpecialFunctionCommand";
+import { CommandCode } from "../../types";
+import { SpecialFunctionLabel, WriteSpecialFunctionCommand } from "./SpecialFunctionCommand";
 
 export enum MemoryLabel {
     A = 0x41

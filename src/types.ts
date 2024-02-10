@@ -72,6 +72,7 @@ export enum TypeCode {
 }
 
 export enum CommandCode {
+    GENERIC = 0x00,
     WRITE_TEXT_FILE = 0x41,
     READ_TEXT_FILE = 0x42,
     WRITE_SPECIAL_FUNCTION = 0x45,
