@@ -99,7 +99,10 @@ export class SignClient {
                 });
             } 
             this.serial.write(packet.toBuffer(), (err) => {
-                if (err !== undefined) { reject(err); return; }
+                if (err) { 
+                    reject(err); 
+                    return; 
+                }
                 
                 if (packet.expectsResponse) { 
                     this.timeout = setTimeout(() => {
