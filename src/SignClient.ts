@@ -1,6 +1,5 @@
 import { SerialPort } from "serialport";
 import { TransmissionPacket } from "./TransmissionPacket";
-import { Response } from "./commands/Response";
 import { ResponseFactory } from "./commands/ResponseFactory";
 import { Chars } from "./types";
 import { SerialPortStream } from "@serialport/stream";
@@ -38,6 +37,7 @@ class SignClientResponseParser extends Transform {
 export class SignClient {
     private readonly DEFAULT_BAUD_RATE = 9600;
     private readonly DEFAULT_TIMEOUT = 5000;
+    private readonly DEFAULT_DATA_PAUSE = 1000;
 
     comPort: string;
     baudRate: number;
@@ -47,12 +47,14 @@ export class SignClient {
     private binding?: BindingInterface;
     private timeoutMs: number = this.DEFAULT_TIMEOUT;
     private timeout?: NodeJS.Timeout;
+    private dataPauseMs: number = this.DEFAULT_DATA_PAUSE;
 
-    constructor(comPort: string, baudRate?: number, binding?: BindingInterface, timeout?: number) {
+    constructor(comPort: string, baudRate?: number, binding?: BindingInterface, timeout?: number, dataPause?: number) {
         this.comPort = comPort;
         this.baudRate = baudRate || this.DEFAULT_BAUD_RATE;
         this.binding = binding;
         this.timeoutMs = timeout || this.DEFAULT_TIMEOUT;
+        this.dataPauseMs = dataPause || this.DEFAULT_DATA_PAUSE;
     }
 
     async connect(): Promise<SignClient> {
@@ -60,7 +62,7 @@ export class SignClient {
             this.serial = new SerialPortStream({
                 binding: this.binding || SerialPort.binding,
                 path: this.comPort, 
-                baudRate: this.baudRate
+                baudRate: this.baudRate,
             }, (err) => {
                 if (err !== null) { 
                     this.serial = undefined;
@@ -77,7 +79,7 @@ export class SignClient {
 
     async send<T extends TransmissionPacket>(packet: TransmissionPacket): Promise<T> {
         return new Promise<T>((resolve, reject) => {
-            if (this.serial === undefined) { 
+            if (!this.serial) { 
                 throw new Error("Serial port is not open");
             }
             if (packet.expectsResponse) {
@@ -98,20 +100,49 @@ export class SignClient {
                     reject(err);
                 });
             } 
-            this.serial.write(packet.toBuffer(), (err) => {
-                if (err !== undefined) { reject(err); return; }
-                
-                if (packet.expectsResponse) { 
-                    this.timeout = setTimeout(() => {
-                        this.serial?.removeAllListeners('data');
-                        reject("Timeout");
-                        return;
-                    }, this.timeoutMs);
-                    return; 
-                }
 
+            const packetBufferArray = packet.toByteArray();
+            const chunkSize = packetBufferArray.length/8;
+            const promises = [];
+            for (let i = 0; i < packetBufferArray.length; i += chunkSize) {
+                const chunk = packetBufferArray.slice(i, i + chunkSize);
+                // do whatever
+                promises.push(this.sendPacket(chunk));
+                promises.push(new Promise((resolve) => { setTimeout(resolve, this.dataPauseMs);}));
+            }
+
+            promises.push(new Promise((resolve, reject) => { 
+                if (packet.expectsResponse) {
+                    this.timeout = setTimeout(() => {
+                        reject("Timeout");
+                    }, this.timeoutMs);
+                }
+                else {
+                    resolve(undefined);
+                }
+            }));
+
+            Promise.all(promises).then(() => {
+                if (!packet.expectsResponse) {
+                    resolve(undefined as unknown as T);
+                }
+            }).catch((err) => {
+                reject(err);
+            });
+        });
+    }
+
+    private async sendPacket<T extends TransmissionPacket>(chunk: number[]): Promise<T> {
+        return new Promise<T>((resolve, reject) => {
+            if (!this.serial) { 
+                throw new Error("Serial port is not open");
+            }
+            this.serial.write(Buffer.from(chunk), (err) => {
+                if (err) { 
+                    reject(err); return; 
+                }
+                
                 resolve(undefined as unknown as T);
-                return;
             });
         });
     }
