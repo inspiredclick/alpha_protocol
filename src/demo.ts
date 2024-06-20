@@ -29,6 +29,11 @@ const comPort = process.argv[2];
       size: "0400",
       lastFourBytes: "FF00"
     }));
+    setMemory.configurations.push(new MemoryConfig({
+      label: FileLabels.get("B"),
+      size: "0400",
+      lastFourBytes: "FF00"
+    }));
     await client.send(setMemory);
     console.log("Memory configured");
 
@@ -52,18 +57,6 @@ const comPort = process.argv[2];
     const readRunSeq = new ReadRunSequence();
     const response = await client.send<ReadRunSequenceResponse>(readRunSeq);
     console.log("Run sequence read:", response.toString());
-
-    const writeRunSeq = new SetRunSequence();
-    const fileASeq = new RunSequenceConfig(
-      FileLabels.get("A")
-    );
-    const fileBSeq = new RunSequenceConfig(
-      FileLabels.get("B")
-    );
-    writeRunSeq.sequence.push(fileASeq);
-    writeRunSeq.sequence.push(fileBSeq);
-    await client.send(writeRunSeq);
-    console.log("Run sequence set");
 
     const beep = new BeepCommand();
     await client.send(beep);
