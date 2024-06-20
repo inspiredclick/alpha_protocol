@@ -6,7 +6,7 @@ export enum SpecialFunctionLabel {
     SET_SPEAKER = 0x21,
     SET_MEMORY = 0x24,
     SET_DAY = 0x26,
-    READ_RUN_SEQUENCE = 0x2E,
+    RUN_SEQUENCE = 0x2E,
 }
 
 export abstract class WriteSpecialFunctionCommand extends Command {

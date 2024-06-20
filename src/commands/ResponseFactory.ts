@@ -1,6 +1,7 @@
 import { TransmissionPacket } from "../TransmissionPacket";
 import { Chars, CommandCode, TypeCode } from "../types";
 import { GenericResponse, Response } from "./Response";
+import { ReadRunSequenceResponse } from "./SpecialFunction/RunSequence/ReadRunSequenceResponse";
 import { ReadTextFileResponse } from "./TextFile/ReadTextFileResponse";
 
 export class GenericPacket extends TransmissionPacket {
@@ -48,12 +49,15 @@ export class ResponseFactory {
             switch (commandCode) {
                 case CommandCode.WRITE_TEXT_FILE:
                     return new ReadTextFileResponse(bufArray, packetPosition);
+                case CommandCode.WRITE_SPECIAL_FUNCTION:
+                    console.log("read special function");
+                    return new ReadRunSequenceResponse(bufArray, packetPosition);
                 default:
                     return new GenericPacket(bufArray);
             }
         }
         catch (err) {
-            throw new ResponseFactoryError(ResponseFactoryErrorCode.MALFORMED_PACKET, "Malformed packet");
+            throw new ResponseFactoryError(ResponseFactoryErrorCode.MALFORMED_PACKET, `Malformed packet: ${err}`);
         }
     }
 }

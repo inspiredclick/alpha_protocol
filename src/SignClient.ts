@@ -106,7 +106,6 @@ export class SignClient {
             const promises = [];
             for (let i = 0; i < packetBufferArray.length; i += chunkSize) {
                 const chunk = packetBufferArray.slice(i, i + chunkSize);
-                // do whatever
                 promises.push(this.sendPacket(chunk));
                 promises.push(new Promise((resolve) => { setTimeout(resolve, this.dataPauseMs);}));
             }

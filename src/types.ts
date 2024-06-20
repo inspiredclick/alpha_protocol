@@ -115,4 +115,15 @@ export enum Color {
     COLOR_MIX = 0x42,
     AUTO = 0x43,
 }
+
+export enum RunSequenceOrder {
+    TIMES = 0x54,
+    IN_ORDER = 0x53,
+    RUN_THEN_DELETE = 0x44,
+}
+
+export enum KeyboardProtectionStatus {
+    DISABLED = 0x55,
+    ENABLED = 0x4C,
+}
 /* eslint-enable @typescript-eslint/no-duplicate-enum-values */

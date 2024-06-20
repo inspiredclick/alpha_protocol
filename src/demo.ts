@@ -5,6 +5,8 @@ import { SignClient } from "./SignClient";
 import { html, text } from "./elements";
 import { Color, DisplayPosition, FileLabels, ModeCode } from "./types";
 import { BeepCommand } from "./commands/Beep";
+import { ReadRunSequence } from "./commands/SpecialFunction/RunSequence/ReadRunSequence";
+import { ReadRunSequenceResponse } from "./commands/SpecialFunction/RunSequence/ReadRunSequenceResponse";
 
 const comPort = process.argv[2];
 
@@ -44,6 +46,11 @@ const comPort = process.argv[2];
     writeFileB.append(html("<message position=\"middle_line\">File B</message>"));
     await client.send(writeFileB);
     console.log("Text written");
+
+    const readRunSeq = new ReadRunSequence();
+    const response = await client.send<ReadRunSequenceResponse>(readRunSeq);
+    console.log(response.toString());
+    console.log("Run sequence read");
 
     const beep = new BeepCommand();
     await client.send(beep);
