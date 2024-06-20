@@ -12,7 +12,7 @@ export class ReadRunSequenceResponse extends TransmissionPacket {
     super();
 
     this.data = data;
-    this.packetPosition = packetPosition;
+    this.packetPosition = ++packetPosition;
     
     let char:number = Chars.NULL;
     while (true) {
