@@ -1,5 +1,5 @@
 import { TransmissionPacket } from "../../../TransmissionPacket";
-import { CommandCode, Chars, RunSequenceOrder, KeyboardProtectionStatus } from "../../../types";
+import { CommandCode, Chars, RunSequenceOrder, KeyboardProtectionStatus, FileLabels } from "../../../types";
 import { RunSequenceConfig } from "./RunSequenceConfig";
 
 export class ReadRunSequenceResponse extends TransmissionPacket {
@@ -47,7 +47,7 @@ export class ReadRunSequenceResponse extends TransmissionPacket {
       }
 
       // File Label
-      runSequenceConfig.fileLabel = String.fromCharCode(data[++this.packetPosition]);
+      runSequenceConfig.fileLabel = FileLabels.getAddress(data[++this.packetPosition]);
       this.sequence.push(runSequenceConfig);
     }
   }

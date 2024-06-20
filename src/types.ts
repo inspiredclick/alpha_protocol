@@ -20,6 +20,14 @@ export class FileLabels {
         return result;
     }
 
+    static getAddress(label: number = 0x41): FileLabel {
+        const result = this.LABELS.find(x => x.address === label)?.address;
+        if (result === undefined) {
+            throw new Error("File label not found");
+        }
+        return result;
+    }
+
     static keys(): string[] {
         return this.LABELS.map(x => x.text);
     }

@@ -6,6 +6,9 @@ export class SetRunSequence extends ReadSpecialFunctionCommand {
   sequence: RunSequenceConfig[] = [];
 
   toByteArray(): number[] {
+    if (this.sequence.length === 0) {
+      console.warn("Run sequence is empty");
+    }
     this.data.push(this.specialFunctionLabel);
     return super.toByteArray();
   }

@@ -7,6 +7,8 @@ import { Color, DisplayPosition, FileLabels, ModeCode } from "./types";
 import { BeepCommand } from "./commands/Beep";
 import { ReadRunSequence } from "./commands/SpecialFunction/RunSequence/ReadRunSequence";
 import { ReadRunSequenceResponse } from "./commands/SpecialFunction/RunSequence/ReadRunSequenceResponse";
+import { SetRunSequence } from "./commands/SpecialFunction/RunSequence/SetRunSequence";
+import { RunSequenceConfig } from "./commands/SpecialFunction/RunSequence/RunSequenceConfig";
 
 const comPort = process.argv[2];
 
@@ -49,8 +51,19 @@ const comPort = process.argv[2];
 
     const readRunSeq = new ReadRunSequence();
     const response = await client.send<ReadRunSequenceResponse>(readRunSeq);
-    console.log(response.toString());
-    console.log("Run sequence read");
+    console.log("Run sequence read:", response.toString());
+
+    const writeRunSeq = new SetRunSequence();
+    const fileASeq = new RunSequenceConfig(
+      FileLabels.get("A")
+    );
+    const fileBSeq = new RunSequenceConfig(
+      FileLabels.get("B")
+    );
+    writeRunSeq.sequence.push(fileASeq);
+    writeRunSeq.sequence.push(fileBSeq);
+    await client.send(writeRunSeq);
+    console.log("Run sequence set");
 
     const beep = new BeepCommand();
     await client.send(beep);
