@@ -26,6 +26,11 @@ const comPort = process.argv[2];
     size: "0400",
     lastFourBytes: "FF00"
   }));
+  setMemory.configurations.push(new MemoryConfig({
+    label: FileLabels.get("B"),
+    size: "0400",
+    lastFourBytes: "FF00"
+  }));
   await client.send(setMemory);
   console.log("Memory configured");
 
