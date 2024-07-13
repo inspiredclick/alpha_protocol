@@ -2,7 +2,7 @@
   "name": "alpha-protocol",
   "version": "1.0.0",
   "description": "",
-  "main": "build/index.js",
+  "main": "build/SignClient.js",
   "types": "build/types.d.ts",
   "type": "module",
   "scripts": {
