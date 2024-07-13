@@ -2,7 +2,8 @@
   "name": "alpha_protocol",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "build/index.js",
+  "types": "build/types.d.ts",
   "scripts": {
     "build": "tsc",
     "test": "jest",
@@ -10,6 +11,9 @@
     "demo": "npm run build && node ./build/demo.js",
     "icli": "npm run build && node ./build/icli.js"
   },
+  "files": [
+    "build/**/*"
+  ],
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -35,5 +39,10 @@
     "@serialport/stream": "^11.0.1",
     "serialport": "^11.0.0",
     "terminal-kit": "^3.0.1"
+  },
+  "peerDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/inspiredclick/alpha_protocol.git"
   }
 }

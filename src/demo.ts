@@ -5,8 +5,6 @@ import { SignClient } from "./SignClient";
 import { html, text } from "./elements";
 import { Color, DisplayPosition, FileLabels, ModeCode } from "./types";
 import { BeepCommand } from "./commands/Beep";
-import { ReadTextFileCommand } from "./commands/TextFile/ReadTextFileCommand";
-import { ReadTextFileResponse } from "./commands/TextFile/ReadTextFileResponse";
 
 const comPort = process.argv[2];
 
