@@ -1,20 +1,12 @@
 {
-  "name": "alpha_protocol",
+  "name": "alpha-protocol",
   "version": "1.0.0",
   "description": "",
   "main": "build/index.js",
   "types": "build/types.d.ts",
-  "module": "build/index.mjs",
-  "exports": {
-    "*":{
-      "types": "./build/types.d.ts",
-      "require": "./build/index.mjs",
-      "import": "./build/index.js"
-    }
-  },
   "type": "module",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc --build tsconfig-build.json",
     "test": "jest",
     "lint": "npx eslint ./src",
     "demo": "npm run build && node ./build/demo.js",
