@@ -4,6 +4,15 @@
   "description": "",
   "main": "build/index.js",
   "types": "build/types.d.ts",
+  "module": "build/index.mjs",
+  "exports": {
+    "*":{
+      "types": "./build/types.d.ts",
+      "require": "./build/index.mjs",
+      "import": "./build/index.js"
+    }
+  },
+  "type": "module",
   "scripts": {
     "build": "tsc",
     "test": "jest",
