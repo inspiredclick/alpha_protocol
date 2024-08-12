@@ -12,8 +12,7 @@
     "test": "jest",
     "lint": "npx eslint ./src",
     "demo": "npm run build && node ./build/demo.js",
-    "icli": "npm run build && node ./build/icli.js",
-    "postinstall": "tsc --outDir ./build"
+    "icli": "npm run build && node ./build/icli.js"
   },
   "files": [
     "build/**/*"
