@@ -4,6 +4,7 @@
   "description": "",
   "main": "build/index.js",
   "types": "build/types.d.ts",
+  "module": "build/index.d.ts",
   "type": "module",
   "scripts": {
     "install": "tsc",
@@ -11,7 +12,8 @@
     "test": "jest",
     "lint": "npx eslint ./src",
     "demo": "npm run build && node ./build/demo.js",
-    "icli": "npm run build && node ./build/icli.js"
+    "icli": "npm run build && node ./build/icli.js",
+    "postinstall": "tsc --outDir ./build"
   },
   "files": [
     "build/**/*"
