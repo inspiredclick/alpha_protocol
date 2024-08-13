@@ -36,7 +36,6 @@
     "@serialport/binding-mock": "^10.2.2",
     "@types/jest": "^29.5.3",
     "@types/node": "^20.4.2",
-    "@types/terminal-kit": "^2.5.4",
     "@typescript-eslint/eslint-plugin": "^6.3.0",
     "@typescript-eslint/parser": "^6.3.0",
     "babel-jest": "^29.6.1",
@@ -47,7 +46,8 @@
   "dependencies": {
     "@serialport/stream": "^11.0.1",
     "serialport": "^11.0.0",
-    "terminal-kit": "^3.0.1"
+    "terminal-kit": "^3.0.1",
+    "@types/terminal-kit": "^2.5.4"
   },
   "peerDependencies": {
     "ts-node": "^10.9.1",
