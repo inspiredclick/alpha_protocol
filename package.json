@@ -21,7 +21,8 @@
     "postinstall": "npm run build"
   },
   "files": [
-    "build/**/*"
+    "build/**/*",
+    "tsconfig.json"
   ],
   "keywords": ["typescript", "library", "alpha-protocol"],
   "author": "Inspired Click",
