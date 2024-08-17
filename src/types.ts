@@ -1,11 +1,12 @@
 export * from "./SignClient";
+export * from "./commands/Beep";
 export * from "./commands/SetMemory";
 export * from "./commands/TextFile/WriteTextFileCommand";
 export * from "./elements";
 /* eslint-disable @typescript-eslint/no-duplicate-enum-values */
 
 export type FileLabel = number;
-export class FileLabels {
+export default class FileLabels {
     private static LABELS: { text: string; address: number }[] = [
         {
             text: "A",
@@ -30,7 +31,7 @@ export class FileLabels {
     }
 }
 
-export enum DisplayPosition {
+export const enum DisplayPosition {
     MIDDLE_LINE = 0x20, // Space
     TOP_LINE = 0x22, // "
     BOTTOM_LINE = 0x26, // &
@@ -39,7 +40,7 @@ export enum DisplayPosition {
     RIGHT = 0x32, // 2
 }
 
-export enum ModeCode {
+export const enum ModeCode {
     SCROLL = 0x61,
     HOLD = 0x62,
     FLASH = 0x63,
@@ -61,7 +62,7 @@ export enum ModeCode {
     SPECIAL = 0x6e,
 }
 
-export enum SpecialGraphics {
+export const enum SpecialGraphics {
     THANK_YOU = 0x53,
     NO_SMOKING = 0x55,
     DONT_DRINK_DRIVE = 0x56,
@@ -71,12 +72,12 @@ export enum SpecialGraphics {
     CHERRY_BOMB = 0x5A,
 }
 
-export enum TypeCode {
+export const enum TypeCode {
     ALL = 0x5a,
     RESPONSE = 0x30,
 }
 
-export enum CommandCode {
+export const enum CommandCode {
     WRITE_TEXT_FILE = 0x41,
     READ_TEXT_FILE = 0x42,
     WRITE_SPECIAL_FUNCTION = 0x45,
@@ -93,7 +94,7 @@ export enum CommandCode {
     SET_TIMEOUT_MESSAGE = 0x54,
 }
 
-export enum Chars {
+export const enum Chars {
     NULL = 0x00,
     START_OF_HEADER = 0x01,
     START_OF_TEXT = 0x02,
@@ -104,7 +105,7 @@ export enum Chars {
     COLOR_FIELD = 0x1C,
 }
 
-export enum Color {
+export const enum Color {
     BLACK = 0x30,
     RED = 0x31,
     GREEN = 0x32,
