@@ -1,14 +1,9 @@
-import { SignClient as SC } from "./SignClient";
-import { SetMemory as SM, MemoryConfig as MC } from "./commands/SetMemory";
-import { WriteTextFileCommand as WTFC } from "./commands/TextFile/WriteTextFileCommand";
-import { html as HT, text as TX } from "./elements";
+export * from "./SignClient";
+export * from "./commands/SetMemory";
+export * from "./commands/TextFile/WriteTextFileCommand";
+export * from "./elements";
 /* eslint-disable @typescript-eslint/no-duplicate-enum-values */
-export type SignClient = SC;
-export type SetMemory = SM;
-export type MemoryConfig = MC;
-export type WriteTextFileCommand = WTFC;
-export const html = HT;
-export const text = TX;
+
 export type FileLabel = number;
 export class FileLabels {
     private static LABELS: { text: string; address: number }[] = [
