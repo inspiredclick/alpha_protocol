@@ -6,7 +6,7 @@ export * from "./elements";
 /* eslint-disable @typescript-eslint/no-duplicate-enum-values */
 
 export type FileLabel = number;
-export default class FileLabels {
+export class FileLabels {
     private static LABELS: { text: string; address: number }[] = [
         {
             text: "A",
