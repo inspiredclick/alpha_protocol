@@ -7,7 +7,6 @@
   "exports": {
     ".": {
       "import": "./build/index.js",
-      "require": "./build/index.cjs",
       "types": "./build/index.d.ts"
     }
   },
