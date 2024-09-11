@@ -17,7 +17,7 @@ export function text(text: string, config?: {displayPosition?: DisplayPosition, 
     return output;
 }
 
-export function html(text: string, config?: {displayPosition?: DisplayPosition, modeCode?: ModeCode, color?: Color}): number[] {
+export function html(text: string): number[] {
     return TagParser.parse(text);
 }
 
