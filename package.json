@@ -2,13 +2,13 @@
   "name": "alpha-protocol",
   "version": "1.0.0",
   "description": "A TypeScript library for alpha protocol",
-  "main": "build/index.js",
+  "main": "build/types.js",
   "types": "build/types.d.ts",
   "exports": {
     ".": {
-      "import": "./build/index.js",
-      "require": "./build/index.js",
-      "types": "./build/index.d.ts"
+      "import": "./build/types.js",
+      "require": "./build/types.js",
+      "types": "./build/types.d.ts"
     }
   },
   "type": "module",
