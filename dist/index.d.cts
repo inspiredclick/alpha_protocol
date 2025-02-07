@@ -2,107 +2,6 @@ import { SerialPortStream } from '@serialport/stream';
 import { BindingInterface } from '@serialport/bindings-interface';
 import { Transform, TransformCallback } from 'stream';
 
-declare abstract class Command extends TransmissionPacket {
-}
-
-declare enum SpecialFunctionLabel {
-    SET_TIME = 32,
-    SET_SPEAKER = 33,
-    SET_MEMORY = 36,
-    SET_DAY = 38
-}
-declare abstract class WriteSpecialFunctionCommand extends Command {
-    commandCode: CommandCode;
-    abstract specialFunctionLabel: SpecialFunctionLabel;
-}
-
-type MemoryLabel = string;
-declare enum MemoryType {
-    TEXT = 65,
-    STRING = 66,
-    DOTS = 67
-}
-declare enum KeyboardStatus {
-    UNLOCKED = 85,
-    LOCKED = 76
-}
-declare class SetMemory extends WriteSpecialFunctionCommand {
-    specialFunctionLabel: SpecialFunctionLabel;
-    commandCode: CommandCode;
-    configurations: MemoryConfig[];
-    toByteArray(): number[];
-}
-declare class MemoryConfig {
-    label: MemoryLabel;
-    type: MemoryType;
-    keyboardStatus: KeyboardStatus;
-    size: string;
-    lastFourBytes: string;
-    constructor(config: {
-        label?: MemoryLabel;
-        type?: MemoryType;
-        keyboardStatus?: KeyboardStatus;
-        size?: string;
-        lastFourBytes?: string;
-    });
-    toByteArray(): number[];
-}
-
-declare class WriteTextFileCommand extends Command {
-    private fileLabel;
-    commandCode: CommandCode;
-    constructor(fileLabel?: FileLabel);
-    append(data: number[]): void;
-}
-
-declare enum SpeakerTone {
-    ON = 65,
-    OFF = 66,
-    TONE = 48,
-    THREE_TONES = 49
-}
-declare class BeepCommand extends TransmissionPacket {
-    readonly BEEP_COMMAND = 40;
-    commandCode: CommandCode;
-    speakerTone: SpeakerTone;
-    data: number[];
-    toByteArray(): number[];
-}
-
-declare class SignClientResponseParser extends Transform {
-    private readonly PACKET_START_BYTE_COUNT;
-    private readonly PACKET_START;
-    private dataBuffer;
-    private inPacket;
-    constructor();
-    _transform(chunk: any, encoding: BufferEncoding, callback: TransformCallback): void;
-}
-declare class SignClient {
-    private readonly DEFAULT_BAUD_RATE;
-    private readonly DEFAULT_TIMEOUT;
-    private readonly DEFAULT_DATA_PAUSE;
-    comPort: string;
-    baudRate: number;
-    serial?: SerialPortStream;
-    parser?: SignClientResponseParser;
-    private binding?;
-    private timeoutMs;
-    private timeout?;
-    private dataPauseMs;
-    constructor(comPort: string, baudRate?: number, binding?: BindingInterface, timeout?: number, dataPause?: number);
-    connect(): Promise<SignClient>;
-    send<T extends TransmissionPacket>(packet: TransmissionPacket): Promise<T>;
-    private sendPacket;
-    isOpen(): boolean;
-}
-
-declare function text(text: string, config?: {
-    displayPosition?: DisplayPosition;
-    modeCode?: ModeCode;
-    color?: Color;
-}): number[];
-declare function html(text: string): number[];
-
 type FileLabel = number;
 declare class FileLabels {
     private static LABELS;
@@ -208,6 +107,43 @@ declare class TransmissionPacketFactory {
     static createPacketBytes(commandCode: Buffer, data: Buffer): Buffer;
 }
 
+declare abstract class Command extends TransmissionPacket {
+}
+
+declare class WriteTextFileCommand extends Command {
+    private fileLabel;
+    commandCode: CommandCode;
+    constructor(fileLabel?: FileLabel);
+    append(data: number[]): void;
+}
+
+declare class SignClientResponseParser extends Transform {
+    private readonly PACKET_START_BYTE_COUNT;
+    private readonly PACKET_START;
+    private dataBuffer;
+    private inPacket;
+    constructor();
+    _transform(chunk: any, encoding: BufferEncoding, callback: TransformCallback): void;
+}
+declare class SignClient {
+    private readonly DEFAULT_BAUD_RATE;
+    private readonly DEFAULT_TIMEOUT;
+    private readonly DEFAULT_DATA_PAUSE;
+    comPort: string;
+    baudRate: number;
+    serial?: SerialPortStream;
+    parser?: SignClientResponseParser;
+    private binding?;
+    private timeoutMs;
+    private timeout?;
+    private dataPauseMs;
+    constructor(comPort: string, baudRate?: number, binding?: BindingInterface, timeout?: number, dataPause?: number);
+    connect(): Promise<SignClient>;
+    send<T extends TransmissionPacket>(packet: TransmissionPacket): Promise<T>;
+    private sendPacket;
+    isOpen(): boolean;
+}
+
 interface Tag {
     tagName: string;
     attributes: {
@@ -225,6 +161,26 @@ declare class TagParser {
     private static parseDisplayPostition;
     private static parseMode;
     private static parseColor;
+}
+declare function text(text: string, config?: {
+    displayPosition?: DisplayPosition;
+    modeCode?: ModeCode;
+    color?: Color;
+}): number[];
+declare function html(text: string): number[];
+
+declare enum SpeakerTone {
+    ON = 65,
+    OFF = 66,
+    TONE = 48,
+    THREE_TONES = 49
+}
+declare class BeepCommand extends TransmissionPacket {
+    readonly BEEP_COMMAND = 40;
+    commandCode: CommandCode;
+    speakerTone: SpeakerTone;
+    data: number[];
+    toByteArray(): number[];
 }
 
 declare class Response {
@@ -245,6 +201,17 @@ declare class ResponseFactory {
     static parse(buffer: Buffer): Response;
 }
 
+declare enum SpecialFunctionLabel {
+    SET_TIME = 32,
+    SET_SPEAKER = 33,
+    SET_MEMORY = 36,
+    SET_DAY = 38
+}
+declare abstract class WriteSpecialFunctionCommand extends Command {
+    commandCode: CommandCode;
+    abstract specialFunctionLabel: SpecialFunctionLabel;
+}
+
 declare enum Day {
     SUNDAY = 49,
     MONDAY = 50,
@@ -258,6 +225,38 @@ declare class SetDay extends WriteSpecialFunctionCommand {
     specialFunctionLabel: SpecialFunctionLabel;
     day: Day;
     constructor(day: Day);
+    toByteArray(): number[];
+}
+
+type MemoryLabel = string;
+declare enum MemoryType {
+    TEXT = 65,
+    STRING = 66,
+    DOTS = 67
+}
+declare enum KeyboardStatus {
+    UNLOCKED = 85,
+    LOCKED = 76
+}
+declare class SetMemory extends WriteSpecialFunctionCommand {
+    specialFunctionLabel: SpecialFunctionLabel;
+    commandCode: CommandCode;
+    configurations: MemoryConfig[];
+    toByteArray(): number[];
+}
+declare class MemoryConfig {
+    label: MemoryLabel;
+    type: MemoryType;
+    keyboardStatus: KeyboardStatus;
+    size: string;
+    lastFourBytes: string;
+    constructor(config: {
+        label?: MemoryLabel;
+        type?: MemoryType;
+        keyboardStatus?: KeyboardStatus;
+        size?: string;
+        lastFourBytes?: string;
+    });
     toByteArray(): number[];
 }
 

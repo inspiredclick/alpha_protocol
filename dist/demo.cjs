@@ -3,6 +3,54 @@
 // src/demo.ts
 var import_serialport2 = require("serialport");
 
+// src/types.ts
+var FileLabels = class {
+  static LABELS = [
+    {
+      text: "A",
+      address: 65
+    },
+    {
+      text: "B",
+      address: 66
+    },
+    {
+      text: "C",
+      address: 67
+    },
+    {
+      text: "D",
+      address: 68
+    },
+    {
+      text: "E",
+      address: 69
+    },
+    {
+      text: "F",
+      address: 70
+    },
+    {
+      text: "G",
+      address: 71
+    },
+    {
+      text: "H",
+      address: 72
+    }
+  ];
+  static get(label = "A") {
+    const result = this.LABELS.find((x) => x.text === label)?.address;
+    if (result === void 0) {
+      throw new Error("File label not found");
+    }
+    return result;
+  }
+  static keys() {
+    return this.LABELS.map((x) => x.text);
+  }
+};
+
 // src/string.ts
 String.prototype.toByteArray = function() {
   const byteBuffer = [];
@@ -37,6 +85,48 @@ var TransmissionPacket = class {
 var Command = class extends TransmissionPacket {
 };
 
+// src/commands/WriteSpecialFunctionCommand.ts
+var WriteSpecialFunctionCommand = class extends Command {
+  commandCode = 69 /* WRITE_SPECIAL_FUNCTION */;
+};
+
+// src/commands/SetMemory.ts
+var SetMemory = class extends WriteSpecialFunctionCommand {
+  specialFunctionLabel = 36 /* SET_MEMORY */;
+  commandCode = 69 /* WRITE_SPECIAL_FUNCTION */;
+  configurations = [];
+  toByteArray() {
+    this.data.push(this.specialFunctionLabel);
+    this.configurations.forEach((config) => {
+      this.data = this.data.concat(config.toByteArray());
+    });
+    return super.toByteArray();
+  }
+};
+var MemoryConfig = class {
+  label;
+  type;
+  keyboardStatus = 85 /* UNLOCKED */;
+  size;
+  lastFourBytes;
+  constructor(config) {
+    this.label = config.label || "A";
+    this.type = config.type || 65 /* TEXT */;
+    this.keyboardStatus = config.keyboardStatus || 85 /* UNLOCKED */;
+    this.size = config.size || "0000";
+    this.lastFourBytes = config.lastFourBytes || "0000";
+  }
+  toByteArray() {
+    if (this.size.length != 4) {
+      throw new Error("Size must be 4 characters long");
+    }
+    if (this.lastFourBytes.length != 4) {
+      throw new Error("Last four bytes must be 4 characters long");
+    }
+    return [FileLabels.get(this.label), this.type, this.keyboardStatus, ...this.size.toByteArray(), ...this.lastFourBytes.toByteArray()];
+  }
+};
+
 // src/commands/TextFile/WriteTextFileCommand.ts
 var WriteTextFileCommand = class extends Command {
   fileLabel;
@@ -48,18 +138,6 @@ var WriteTextFileCommand = class extends Command {
   }
   append(data) {
     this.data = this.data.concat(data);
-  }
-};
-
-// src/commands/Beep.ts
-var BeepCommand = class extends TransmissionPacket {
-  BEEP_COMMAND = 40;
-  commandCode = 69 /* WRITE_SPECIAL_FUNCTION */;
-  speakerTone = 48 /* TONE */;
-  data = [this.BEEP_COMMAND];
-  toByteArray() {
-    this.data.push(this.speakerTone);
-    return super.toByteArray();
   }
 };
 
@@ -280,7 +358,7 @@ var SignClient = class {
   }
 };
 
-// src/TagParser.ts
+// src/elements.ts
 var TagParser = class {
   static tagRegex = /<([a-z]+)([^>]*)>([^<]*)<\/\1>/g;
   static attributeRegex = /([a-z]+)="([^"]*)"/g;
@@ -416,8 +494,6 @@ var TagParser = class {
     }
   }
 };
-
-// src/elements.ts
 function text(text2, config) {
   let output = [];
   if (config?.displayPosition !== void 0 || config?.modeCode !== void 0) {
@@ -435,93 +511,15 @@ function html(text2) {
   return TagParser.parse(text2);
 }
 
-// src/types.ts
-var FileLabels = class {
-  static LABELS = [
-    {
-      text: "A",
-      address: 65
-    },
-    {
-      text: "B",
-      address: 66
-    },
-    {
-      text: "C",
-      address: 67
-    },
-    {
-      text: "D",
-      address: 68
-    },
-    {
-      text: "E",
-      address: 69
-    },
-    {
-      text: "F",
-      address: 70
-    },
-    {
-      text: "G",
-      address: 71
-    },
-    {
-      text: "H",
-      address: 72
-    }
-  ];
-  static get(label = "A") {
-    const result = this.LABELS.find((x) => x.text === label)?.address;
-    if (result === void 0) {
-      throw new Error("File label not found");
-    }
-    return result;
-  }
-  static keys() {
-    return this.LABELS.map((x) => x.text);
-  }
-};
-
-// src/commands/WriteSpecialFunctionCommand.ts
-var WriteSpecialFunctionCommand = class extends Command {
+// src/commands/Beep.ts
+var BeepCommand = class extends TransmissionPacket {
+  BEEP_COMMAND = 40;
   commandCode = 69 /* WRITE_SPECIAL_FUNCTION */;
-};
-
-// src/commands/SetMemory.ts
-var SetMemory = class extends WriteSpecialFunctionCommand {
-  specialFunctionLabel = 36 /* SET_MEMORY */;
-  commandCode = 69 /* WRITE_SPECIAL_FUNCTION */;
-  configurations = [];
+  speakerTone = 48 /* TONE */;
+  data = [this.BEEP_COMMAND];
   toByteArray() {
-    this.data.push(this.specialFunctionLabel);
-    this.configurations.forEach((config) => {
-      this.data = this.data.concat(config.toByteArray());
-    });
+    this.data.push(this.speakerTone);
     return super.toByteArray();
-  }
-};
-var MemoryConfig = class {
-  label;
-  type;
-  keyboardStatus = 85 /* UNLOCKED */;
-  size;
-  lastFourBytes;
-  constructor(config) {
-    this.label = config.label || "A";
-    this.type = config.type || 65 /* TEXT */;
-    this.keyboardStatus = config.keyboardStatus || 85 /* UNLOCKED */;
-    this.size = config.size || "0000";
-    this.lastFourBytes = config.lastFourBytes || "0000";
-  }
-  toByteArray() {
-    if (this.size.length != 4) {
-      throw new Error("Size must be 4 characters long");
-    }
-    if (this.lastFourBytes.length != 4) {
-      throw new Error("Last four bytes must be 4 characters long");
-    }
-    return [FileLabels.get(this.label), this.type, this.keyboardStatus, ...this.size.toByteArray(), ...this.lastFourBytes.toByteArray()];
   }
 };
 

@@ -1,4 +1,4 @@
-import {TagParser} from './TagParser';
+import { TagParser } from './elements';
 import { Color, DisplayPosition, ModeCode } from './types';
 
 describe('TagParser', () => {

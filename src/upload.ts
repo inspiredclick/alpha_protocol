@@ -2,9 +2,10 @@ import { promises as fs } from 'fs';
 import * as path from 'path';
 import { SignClient } from './SignClient';
 import { SetMemory, MemoryConfig } from './commands/SetMemory';
-import { FileLabels, html } from './types';
+import { FileLabels } from './types';
 import { WriteTextFileCommand } from './commands/TextFile/WriteTextFileCommand';
 import { BeepCommand } from './commands/Beep';
+import { html } from './elements';
 
 (async () => {
   let config = null;

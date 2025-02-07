@@ -26,13 +26,13 @@ __export(src_exports, {
   Command: () => Command,
   CommandCode: () => CommandCode,
   Day: () => Day,
-  DisplayPosition: () => DisplayPosition2,
+  DisplayPosition: () => DisplayPosition,
   FileLabels: () => FileLabels,
   GenericResponse: () => GenericResponse,
   KeyboardStatus: () => KeyboardStatus,
   MemoryConfig: () => MemoryConfig,
   MemoryType: () => MemoryType,
-  ModeCode: () => ModeCode2,
+  ModeCode: () => ModeCode,
   ReadTextFileCommand: () => ReadTextFileCommand,
   ReadTextFileResponse: () => ReadTextFileResponse,
   Response: () => Response,
@@ -50,7 +50,7 @@ __export(src_exports, {
   TagParser: () => TagParser,
   TransmissionPacket: () => TransmissionPacket,
   TransmissionPacketFactory: () => TransmissionPacketFactory,
-  TypeCode: () => TypeCode2,
+  TypeCode: () => TypeCode,
   WriteSpecialFunctionCommand: () => WriteSpecialFunctionCommand,
   WriteTextFileCommand: () => WriteTextFileCommand,
   html: () => html,
@@ -68,68 +68,187 @@ String.prototype.toByteArray = function() {
   return byteBuffer;
 };
 
+// src/types.ts
+var FileLabels = class {
+  static LABELS = [
+    {
+      text: "A",
+      address: 65
+    },
+    {
+      text: "B",
+      address: 66
+    },
+    {
+      text: "C",
+      address: 67
+    },
+    {
+      text: "D",
+      address: 68
+    },
+    {
+      text: "E",
+      address: 69
+    },
+    {
+      text: "F",
+      address: 70
+    },
+    {
+      text: "G",
+      address: 71
+    },
+    {
+      text: "H",
+      address: 72
+    }
+  ];
+  static get(label = "A") {
+    const result = this.LABELS.find((x) => x.text === label)?.address;
+    if (result === void 0) {
+      throw new Error("File label not found");
+    }
+    return result;
+  }
+  static keys() {
+    return this.LABELS.map((x) => x.text);
+  }
+};
+var DisplayPosition = /* @__PURE__ */ ((DisplayPosition3) => {
+  DisplayPosition3[DisplayPosition3["MIDDLE_LINE"] = 32] = "MIDDLE_LINE";
+  DisplayPosition3[DisplayPosition3["TOP_LINE"] = 34] = "TOP_LINE";
+  DisplayPosition3[DisplayPosition3["BOTTOM_LINE"] = 38] = "BOTTOM_LINE";
+  DisplayPosition3[DisplayPosition3["FILL"] = 48] = "FILL";
+  DisplayPosition3[DisplayPosition3["LEFT"] = 49] = "LEFT";
+  DisplayPosition3[DisplayPosition3["RIGHT"] = 50] = "RIGHT";
+  return DisplayPosition3;
+})(DisplayPosition || {});
+var ModeCode = /* @__PURE__ */ ((ModeCode3) => {
+  ModeCode3[ModeCode3["SCROLL"] = 97] = "SCROLL";
+  ModeCode3[ModeCode3["HOLD"] = 98] = "HOLD";
+  ModeCode3[ModeCode3["FLASH"] = 99] = "FLASH";
+  ModeCode3[ModeCode3["RESERVED"] = 100] = "RESERVED";
+  ModeCode3[ModeCode3["ROLL_UP"] = 101] = "ROLL_UP";
+  ModeCode3[ModeCode3["ROLL_DOWN"] = 102] = "ROLL_DOWN";
+  ModeCode3[ModeCode3["ROLL_LEFT"] = 103] = "ROLL_LEFT";
+  ModeCode3[ModeCode3["ROLL_RIGHT"] = 104] = "ROLL_RIGHT";
+  ModeCode3[ModeCode3["ROLL_IN"] = 112] = "ROLL_IN";
+  ModeCode3[ModeCode3["ROLL_OUT"] = 113] = "ROLL_OUT";
+  ModeCode3[ModeCode3["WIPE_UP"] = 105] = "WIPE_UP";
+  ModeCode3[ModeCode3["WIPE_DOWN"] = 106] = "WIPE_DOWN";
+  ModeCode3[ModeCode3["WIPE_LEFT"] = 107] = "WIPE_LEFT";
+  ModeCode3[ModeCode3["WIPE_RIGHT"] = 108] = "WIPE_RIGHT";
+  ModeCode3[ModeCode3["WIPE_IN"] = 114] = "WIPE_IN";
+  ModeCode3[ModeCode3["WIPE_OUT"] = 115] = "WIPE_OUT";
+  ModeCode3[ModeCode3["TWO_LINE_SCROLL"] = 109] = "TWO_LINE_SCROLL";
+  ModeCode3[ModeCode3["AUTO"] = 111] = "AUTO";
+  ModeCode3[ModeCode3["SPECIAL"] = 110] = "SPECIAL";
+  return ModeCode3;
+})(ModeCode || {});
+var SpecialGraphics = /* @__PURE__ */ ((SpecialGraphics2) => {
+  SpecialGraphics2[SpecialGraphics2["THANK_YOU"] = 83] = "THANK_YOU";
+  SpecialGraphics2[SpecialGraphics2["NO_SMOKING"] = 85] = "NO_SMOKING";
+  SpecialGraphics2[SpecialGraphics2["DONT_DRINK_DRIVE"] = 86] = "DONT_DRINK_DRIVE";
+  SpecialGraphics2[SpecialGraphics2["RUNNING_ANIMAL"] = 87] = "RUNNING_ANIMAL";
+  SpecialGraphics2[SpecialGraphics2["FIREWORKS"] = 88] = "FIREWORKS";
+  SpecialGraphics2[SpecialGraphics2["TURBO_CAR"] = 89] = "TURBO_CAR";
+  SpecialGraphics2[SpecialGraphics2["CHERRY_BOMB"] = 90] = "CHERRY_BOMB";
+  return SpecialGraphics2;
+})(SpecialGraphics || {});
+var TypeCode = /* @__PURE__ */ ((TypeCode3) => {
+  TypeCode3[TypeCode3["ALL"] = 90] = "ALL";
+  TypeCode3[TypeCode3["RESPONSE"] = 48] = "RESPONSE";
+  return TypeCode3;
+})(TypeCode || {});
+var CommandCode = /* @__PURE__ */ ((CommandCode3) => {
+  CommandCode3[CommandCode3["WRITE_TEXT_FILE"] = 65] = "WRITE_TEXT_FILE";
+  CommandCode3[CommandCode3["READ_TEXT_FILE"] = 66] = "READ_TEXT_FILE";
+  CommandCode3[CommandCode3["WRITE_SPECIAL_FUNCTION"] = 69] = "WRITE_SPECIAL_FUNCTION";
+  CommandCode3[CommandCode3["READ_SPECIAL_FUNCTION"] = 70] = "READ_SPECIAL_FUNCTION";
+  CommandCode3[CommandCode3["WRITE_STRING_FILE"] = 71] = "WRITE_STRING_FILE";
+  CommandCode3[CommandCode3["READ_STRING_FILE"] = 72] = "READ_STRING_FILE";
+  CommandCode3[CommandCode3["WRITE_SMALL_DOTS_PICTURE"] = 73] = "WRITE_SMALL_DOTS_PICTURE";
+  CommandCode3[CommandCode3["READ_SMALL_DOTS_PICTURE"] = 74] = "READ_SMALL_DOTS_PICTURE";
+  CommandCode3[CommandCode3["WRITE_RGB_DOTS_PICTURE"] = 75] = "WRITE_RGB_DOTS_PICTURE";
+  CommandCode3[CommandCode3["READ_RGB_DOTS_PICTURE"] = 76] = "READ_RGB_DOTS_PICTURE";
+  CommandCode3[CommandCode3["WRITE_LARGE_DOTS_PICTURE"] = 77] = "WRITE_LARGE_DOTS_PICTURE";
+  CommandCode3[CommandCode3["READ_LARGE_DOTS_PICTURE"] = 78] = "READ_LARGE_DOTS_PICTURE";
+  CommandCode3[CommandCode3["WRITE_ALPHAVISION_BULLETIN"] = 79] = "WRITE_ALPHAVISION_BULLETIN";
+  CommandCode3[CommandCode3["SET_TIMEOUT_MESSAGE"] = 84] = "SET_TIMEOUT_MESSAGE";
+  return CommandCode3;
+})(CommandCode || {});
+var Chars = /* @__PURE__ */ ((Chars2) => {
+  Chars2[Chars2["NULL"] = 0] = "NULL";
+  Chars2[Chars2["START_OF_HEADER"] = 1] = "START_OF_HEADER";
+  Chars2[Chars2["START_OF_TEXT"] = 2] = "START_OF_TEXT";
+  Chars2[Chars2["END_OF_TRANSMISSION"] = 4] = "END_OF_TRANSMISSION";
+  Chars2[Chars2["END_OF_TEXT"] = 3] = "END_OF_TEXT";
+  Chars2[Chars2["ESCAPE"] = 27] = "ESCAPE";
+  Chars2[Chars2["MODE_FIELD"] = 27] = "MODE_FIELD";
+  Chars2[Chars2["COLOR_FIELD"] = 28] = "COLOR_FIELD";
+  return Chars2;
+})(Chars || {});
+var Color = /* @__PURE__ */ ((Color2) => {
+  Color2[Color2["BLACK"] = 48] = "BLACK";
+  Color2[Color2["RED"] = 49] = "RED";
+  Color2[Color2["GREEN"] = 50] = "GREEN";
+  Color2[Color2["AMBER"] = 51] = "AMBER";
+  Color2[Color2["DIM_RED"] = 52] = "DIM_RED";
+  Color2[Color2["DIM_GREEN"] = 53] = "DIM_GREEN";
+  Color2[Color2["BROWN"] = 54] = "BROWN";
+  Color2[Color2["ORANGE"] = 55] = "ORANGE";
+  Color2[Color2["YELLOW"] = 56] = "YELLOW";
+  Color2[Color2["RAINBOW_1"] = 57] = "RAINBOW_1";
+  Color2[Color2["RAINBOW_2"] = 65] = "RAINBOW_2";
+  Color2[Color2["COLOR_MIX"] = 66] = "COLOR_MIX";
+  Color2[Color2["AUTO"] = 67] = "AUTO";
+  return Color2;
+})(Color || {});
+
+// src/TransmissionPacket.ts
+var TransmissionPacket = class {
+  typeCode = 90 /* ALL */;
+  signAddress = "00";
+  data = [];
+  expectsResponse = false;
+  toByteArray() {
+    let packet = [0 /* NULL */, 0 /* NULL */, 0 /* NULL */, 0 /* NULL */, 0 /* NULL */, 1 /* START_OF_HEADER */, this.typeCode];
+    packet = packet.concat(this.signAddress.toByteArray());
+    packet.push(2 /* START_OF_TEXT */);
+    packet.push(this.commandCode);
+    packet = packet.concat(this.data);
+    packet.push(4 /* END_OF_TRANSMISSION */);
+    return packet;
+  }
+  toBuffer() {
+    return Buffer.from(this.toByteArray());
+  }
+};
+
+// src/TransmissionPacketFactory.ts
+var TransmissionPacketFactory = class {
+  static DEFAULT_ADDRESS = "00";
+  static createPacketBytes(commandCode, data) {
+    let packet = Buffer.from([
+      0 /* NULL */,
+      0 /* NULL */,
+      0 /* NULL */,
+      0 /* NULL */,
+      0 /* NULL */,
+      1 /* START_OF_HEADER */,
+      90 /* ALL */,
+      ...this.DEFAULT_ADDRESS.toByteArray(),
+      2 /* START_OF_TEXT */
+    ]);
+    packet = Buffer.concat([packet, commandCode, data]);
+    packet = Buffer.concat([packet, Buffer.from([4 /* END_OF_TRANSMISSION */])]);
+    return packet;
+  }
+};
+
 // src/commands/Command.ts
 var Command = class extends TransmissionPacket {
-};
-
-// src/commands/WriteSpecialFunctionCommand.ts
-var SpecialFunctionLabel = /* @__PURE__ */ ((SpecialFunctionLabel2) => {
-  SpecialFunctionLabel2[SpecialFunctionLabel2["SET_TIME"] = 32] = "SET_TIME";
-  SpecialFunctionLabel2[SpecialFunctionLabel2["SET_SPEAKER"] = 33] = "SET_SPEAKER";
-  SpecialFunctionLabel2[SpecialFunctionLabel2["SET_MEMORY"] = 36] = "SET_MEMORY";
-  SpecialFunctionLabel2[SpecialFunctionLabel2["SET_DAY"] = 38] = "SET_DAY";
-  return SpecialFunctionLabel2;
-})(SpecialFunctionLabel || {});
-var WriteSpecialFunctionCommand = class extends Command {
-  commandCode = 69 /* WRITE_SPECIAL_FUNCTION */;
-};
-
-// src/commands/SetMemory.ts
-var MemoryType = /* @__PURE__ */ ((MemoryType2) => {
-  MemoryType2[MemoryType2["TEXT"] = 65] = "TEXT";
-  MemoryType2[MemoryType2["STRING"] = 66] = "STRING";
-  MemoryType2[MemoryType2["DOTS"] = 67] = "DOTS";
-  return MemoryType2;
-})(MemoryType || {});
-var KeyboardStatus = /* @__PURE__ */ ((KeyboardStatus2) => {
-  KeyboardStatus2[KeyboardStatus2["UNLOCKED"] = 85] = "UNLOCKED";
-  KeyboardStatus2[KeyboardStatus2["LOCKED"] = 76] = "LOCKED";
-  return KeyboardStatus2;
-})(KeyboardStatus || {});
-var SetMemory = class extends WriteSpecialFunctionCommand {
-  specialFunctionLabel = 36 /* SET_MEMORY */;
-  commandCode = 69 /* WRITE_SPECIAL_FUNCTION */;
-  configurations = [];
-  toByteArray() {
-    this.data.push(this.specialFunctionLabel);
-    this.configurations.forEach((config) => {
-      this.data = this.data.concat(config.toByteArray());
-    });
-    return super.toByteArray();
-  }
-};
-var MemoryConfig = class {
-  label;
-  type;
-  keyboardStatus = 85 /* UNLOCKED */;
-  size;
-  lastFourBytes;
-  constructor(config) {
-    this.label = config.label || "A";
-    this.type = config.type || 65 /* TEXT */;
-    this.keyboardStatus = config.keyboardStatus || 85 /* UNLOCKED */;
-    this.size = config.size || "0000";
-    this.lastFourBytes = config.lastFourBytes || "0000";
-  }
-  toByteArray() {
-    if (this.size.length != 4) {
-      throw new Error("Size must be 4 characters long");
-    }
-    if (this.lastFourBytes.length != 4) {
-      throw new Error("Last four bytes must be 4 characters long");
-    }
-    return [FileLabels.get(this.label), this.type, this.keyboardStatus, ...this.size.toByteArray(), ...this.lastFourBytes.toByteArray()];
-  }
 };
 
 // src/commands/TextFile/WriteTextFileCommand.ts
@@ -143,25 +262,6 @@ var WriteTextFileCommand = class extends Command {
   }
   append(data) {
     this.data = this.data.concat(data);
-  }
-};
-
-// src/commands/Beep.ts
-var SpeakerTone = /* @__PURE__ */ ((SpeakerTone2) => {
-  SpeakerTone2[SpeakerTone2["ON"] = 65] = "ON";
-  SpeakerTone2[SpeakerTone2["OFF"] = 66] = "OFF";
-  SpeakerTone2[SpeakerTone2["TONE"] = 48] = "TONE";
-  SpeakerTone2[SpeakerTone2["THREE_TONES"] = 49] = "THREE_TONES";
-  return SpeakerTone2;
-})(SpeakerTone || {});
-var BeepCommand = class extends TransmissionPacket {
-  BEEP_COMMAND = 40;
-  commandCode = 69 /* WRITE_SPECIAL_FUNCTION */;
-  speakerTone = 48 /* TONE */;
-  data = [this.BEEP_COMMAND];
-  toByteArray() {
-    this.data.push(this.speakerTone);
-    return super.toByteArray();
   }
 };
 
@@ -382,7 +482,7 @@ var SignClient = class {
   }
 };
 
-// src/TagParser.ts
+// src/elements.ts
 var TagParser = class {
   static tagRegex = /<([a-z]+)([^>]*)>([^<]*)<\/\1>/g;
   static attributeRegex = /([a-z]+)="([^"]*)"/g;
@@ -518,8 +618,6 @@ var TagParser = class {
     }
   }
 };
-
-// src/elements.ts
 function text(text2, config) {
   let output = [];
   if (config?.displayPosition !== void 0 || config?.modeCode !== void 0) {
@@ -537,188 +635,69 @@ function html(text2) {
   return TagParser.parse(text2);
 }
 
-// src/types.ts
-var FileLabels = class {
-  static LABELS = [
-    {
-      text: "A",
-      address: 65
-    },
-    {
-      text: "B",
-      address: 66
-    },
-    {
-      text: "C",
-      address: 67
-    },
-    {
-      text: "D",
-      address: 68
-    },
-    {
-      text: "E",
-      address: 69
-    },
-    {
-      text: "F",
-      address: 70
-    },
-    {
-      text: "G",
-      address: 71
-    },
-    {
-      text: "H",
-      address: 72
-    }
-  ];
-  static get(label = "A") {
-    const result = this.LABELS.find((x) => x.text === label)?.address;
-    if (result === void 0) {
-      throw new Error("File label not found");
-    }
-    return result;
-  }
-  static keys() {
-    return this.LABELS.map((x) => x.text);
-  }
-};
-var DisplayPosition2 = /* @__PURE__ */ ((DisplayPosition3) => {
-  DisplayPosition3[DisplayPosition3["MIDDLE_LINE"] = 32] = "MIDDLE_LINE";
-  DisplayPosition3[DisplayPosition3["TOP_LINE"] = 34] = "TOP_LINE";
-  DisplayPosition3[DisplayPosition3["BOTTOM_LINE"] = 38] = "BOTTOM_LINE";
-  DisplayPosition3[DisplayPosition3["FILL"] = 48] = "FILL";
-  DisplayPosition3[DisplayPosition3["LEFT"] = 49] = "LEFT";
-  DisplayPosition3[DisplayPosition3["RIGHT"] = 50] = "RIGHT";
-  return DisplayPosition3;
-})(DisplayPosition2 || {});
-var ModeCode2 = /* @__PURE__ */ ((ModeCode3) => {
-  ModeCode3[ModeCode3["SCROLL"] = 97] = "SCROLL";
-  ModeCode3[ModeCode3["HOLD"] = 98] = "HOLD";
-  ModeCode3[ModeCode3["FLASH"] = 99] = "FLASH";
-  ModeCode3[ModeCode3["RESERVED"] = 100] = "RESERVED";
-  ModeCode3[ModeCode3["ROLL_UP"] = 101] = "ROLL_UP";
-  ModeCode3[ModeCode3["ROLL_DOWN"] = 102] = "ROLL_DOWN";
-  ModeCode3[ModeCode3["ROLL_LEFT"] = 103] = "ROLL_LEFT";
-  ModeCode3[ModeCode3["ROLL_RIGHT"] = 104] = "ROLL_RIGHT";
-  ModeCode3[ModeCode3["ROLL_IN"] = 112] = "ROLL_IN";
-  ModeCode3[ModeCode3["ROLL_OUT"] = 113] = "ROLL_OUT";
-  ModeCode3[ModeCode3["WIPE_UP"] = 105] = "WIPE_UP";
-  ModeCode3[ModeCode3["WIPE_DOWN"] = 106] = "WIPE_DOWN";
-  ModeCode3[ModeCode3["WIPE_LEFT"] = 107] = "WIPE_LEFT";
-  ModeCode3[ModeCode3["WIPE_RIGHT"] = 108] = "WIPE_RIGHT";
-  ModeCode3[ModeCode3["WIPE_IN"] = 114] = "WIPE_IN";
-  ModeCode3[ModeCode3["WIPE_OUT"] = 115] = "WIPE_OUT";
-  ModeCode3[ModeCode3["TWO_LINE_SCROLL"] = 109] = "TWO_LINE_SCROLL";
-  ModeCode3[ModeCode3["AUTO"] = 111] = "AUTO";
-  ModeCode3[ModeCode3["SPECIAL"] = 110] = "SPECIAL";
-  return ModeCode3;
-})(ModeCode2 || {});
-var SpecialGraphics = /* @__PURE__ */ ((SpecialGraphics2) => {
-  SpecialGraphics2[SpecialGraphics2["THANK_YOU"] = 83] = "THANK_YOU";
-  SpecialGraphics2[SpecialGraphics2["NO_SMOKING"] = 85] = "NO_SMOKING";
-  SpecialGraphics2[SpecialGraphics2["DONT_DRINK_DRIVE"] = 86] = "DONT_DRINK_DRIVE";
-  SpecialGraphics2[SpecialGraphics2["RUNNING_ANIMAL"] = 87] = "RUNNING_ANIMAL";
-  SpecialGraphics2[SpecialGraphics2["FIREWORKS"] = 88] = "FIREWORKS";
-  SpecialGraphics2[SpecialGraphics2["TURBO_CAR"] = 89] = "TURBO_CAR";
-  SpecialGraphics2[SpecialGraphics2["CHERRY_BOMB"] = 90] = "CHERRY_BOMB";
-  return SpecialGraphics2;
-})(SpecialGraphics || {});
-var TypeCode2 = /* @__PURE__ */ ((TypeCode3) => {
-  TypeCode3[TypeCode3["ALL"] = 90] = "ALL";
-  TypeCode3[TypeCode3["RESPONSE"] = 48] = "RESPONSE";
-  return TypeCode3;
-})(TypeCode2 || {});
-var CommandCode = /* @__PURE__ */ ((CommandCode3) => {
-  CommandCode3[CommandCode3["WRITE_TEXT_FILE"] = 65] = "WRITE_TEXT_FILE";
-  CommandCode3[CommandCode3["READ_TEXT_FILE"] = 66] = "READ_TEXT_FILE";
-  CommandCode3[CommandCode3["WRITE_SPECIAL_FUNCTION"] = 69] = "WRITE_SPECIAL_FUNCTION";
-  CommandCode3[CommandCode3["READ_SPECIAL_FUNCTION"] = 70] = "READ_SPECIAL_FUNCTION";
-  CommandCode3[CommandCode3["WRITE_STRING_FILE"] = 71] = "WRITE_STRING_FILE";
-  CommandCode3[CommandCode3["READ_STRING_FILE"] = 72] = "READ_STRING_FILE";
-  CommandCode3[CommandCode3["WRITE_SMALL_DOTS_PICTURE"] = 73] = "WRITE_SMALL_DOTS_PICTURE";
-  CommandCode3[CommandCode3["READ_SMALL_DOTS_PICTURE"] = 74] = "READ_SMALL_DOTS_PICTURE";
-  CommandCode3[CommandCode3["WRITE_RGB_DOTS_PICTURE"] = 75] = "WRITE_RGB_DOTS_PICTURE";
-  CommandCode3[CommandCode3["READ_RGB_DOTS_PICTURE"] = 76] = "READ_RGB_DOTS_PICTURE";
-  CommandCode3[CommandCode3["WRITE_LARGE_DOTS_PICTURE"] = 77] = "WRITE_LARGE_DOTS_PICTURE";
-  CommandCode3[CommandCode3["READ_LARGE_DOTS_PICTURE"] = 78] = "READ_LARGE_DOTS_PICTURE";
-  CommandCode3[CommandCode3["WRITE_ALPHAVISION_BULLETIN"] = 79] = "WRITE_ALPHAVISION_BULLETIN";
-  CommandCode3[CommandCode3["SET_TIMEOUT_MESSAGE"] = 84] = "SET_TIMEOUT_MESSAGE";
-  return CommandCode3;
-})(CommandCode || {});
-var Chars = /* @__PURE__ */ ((Chars2) => {
-  Chars2[Chars2["NULL"] = 0] = "NULL";
-  Chars2[Chars2["START_OF_HEADER"] = 1] = "START_OF_HEADER";
-  Chars2[Chars2["START_OF_TEXT"] = 2] = "START_OF_TEXT";
-  Chars2[Chars2["END_OF_TRANSMISSION"] = 4] = "END_OF_TRANSMISSION";
-  Chars2[Chars2["END_OF_TEXT"] = 3] = "END_OF_TEXT";
-  Chars2[Chars2["ESCAPE"] = 27] = "ESCAPE";
-  Chars2[Chars2["MODE_FIELD"] = 27] = "MODE_FIELD";
-  Chars2[Chars2["COLOR_FIELD"] = 28] = "COLOR_FIELD";
-  return Chars2;
-})(Chars || {});
-var Color = /* @__PURE__ */ ((Color2) => {
-  Color2[Color2["BLACK"] = 48] = "BLACK";
-  Color2[Color2["RED"] = 49] = "RED";
-  Color2[Color2["GREEN"] = 50] = "GREEN";
-  Color2[Color2["AMBER"] = 51] = "AMBER";
-  Color2[Color2["DIM_RED"] = 52] = "DIM_RED";
-  Color2[Color2["DIM_GREEN"] = 53] = "DIM_GREEN";
-  Color2[Color2["BROWN"] = 54] = "BROWN";
-  Color2[Color2["ORANGE"] = 55] = "ORANGE";
-  Color2[Color2["YELLOW"] = 56] = "YELLOW";
-  Color2[Color2["RAINBOW_1"] = 57] = "RAINBOW_1";
-  Color2[Color2["RAINBOW_2"] = 65] = "RAINBOW_2";
-  Color2[Color2["COLOR_MIX"] = 66] = "COLOR_MIX";
-  Color2[Color2["AUTO"] = 67] = "AUTO";
-  return Color2;
-})(Color || {});
-
-// src/TransmissionPacket.ts
-var TransmissionPacket = class {
-  typeCode = 90 /* ALL */;
-  signAddress = "00";
-  data = [];
-  expectsResponse = false;
-  toByteArray() {
-    let packet = [0 /* NULL */, 0 /* NULL */, 0 /* NULL */, 0 /* NULL */, 0 /* NULL */, 1 /* START_OF_HEADER */, this.typeCode];
-    packet = packet.concat(this.signAddress.toByteArray());
-    packet.push(2 /* START_OF_TEXT */);
-    packet.push(this.commandCode);
-    packet = packet.concat(this.data);
-    packet.push(4 /* END_OF_TRANSMISSION */);
-    return packet;
-  }
-  toBuffer() {
-    return Buffer.from(this.toByteArray());
-  }
-};
-
-// src/TransmissionPacketFactory.ts
-var TransmissionPacketFactory = class {
-  static DEFAULT_ADDRESS = "00";
-  static createPacketBytes(commandCode, data) {
-    let packet = Buffer.from([
-      0 /* NULL */,
-      0 /* NULL */,
-      0 /* NULL */,
-      0 /* NULL */,
-      0 /* NULL */,
-      1 /* START_OF_HEADER */,
-      90 /* ALL */,
-      ...this.DEFAULT_ADDRESS.toByteArray(),
-      2 /* START_OF_TEXT */
-    ]);
-    packet = Buffer.concat([packet, commandCode, data]);
-    packet = Buffer.concat([packet, Buffer.from([4 /* END_OF_TRANSMISSION */])]);
-    return packet;
-  }
-};
-
 // src/icli.ts
 var import_terminal_kit = require("terminal-kit");
 var import_serialport2 = require("serialport");
+
+// src/commands/WriteSpecialFunctionCommand.ts
+var SpecialFunctionLabel = /* @__PURE__ */ ((SpecialFunctionLabel2) => {
+  SpecialFunctionLabel2[SpecialFunctionLabel2["SET_TIME"] = 32] = "SET_TIME";
+  SpecialFunctionLabel2[SpecialFunctionLabel2["SET_SPEAKER"] = 33] = "SET_SPEAKER";
+  SpecialFunctionLabel2[SpecialFunctionLabel2["SET_MEMORY"] = 36] = "SET_MEMORY";
+  SpecialFunctionLabel2[SpecialFunctionLabel2["SET_DAY"] = 38] = "SET_DAY";
+  return SpecialFunctionLabel2;
+})(SpecialFunctionLabel || {});
+var WriteSpecialFunctionCommand = class extends Command {
+  commandCode = 69 /* WRITE_SPECIAL_FUNCTION */;
+};
+
+// src/commands/SetMemory.ts
+var MemoryType = /* @__PURE__ */ ((MemoryType2) => {
+  MemoryType2[MemoryType2["TEXT"] = 65] = "TEXT";
+  MemoryType2[MemoryType2["STRING"] = 66] = "STRING";
+  MemoryType2[MemoryType2["DOTS"] = 67] = "DOTS";
+  return MemoryType2;
+})(MemoryType || {});
+var KeyboardStatus = /* @__PURE__ */ ((KeyboardStatus2) => {
+  KeyboardStatus2[KeyboardStatus2["UNLOCKED"] = 85] = "UNLOCKED";
+  KeyboardStatus2[KeyboardStatus2["LOCKED"] = 76] = "LOCKED";
+  return KeyboardStatus2;
+})(KeyboardStatus || {});
+var SetMemory = class extends WriteSpecialFunctionCommand {
+  specialFunctionLabel = 36 /* SET_MEMORY */;
+  commandCode = 69 /* WRITE_SPECIAL_FUNCTION */;
+  configurations = [];
+  toByteArray() {
+    this.data.push(this.specialFunctionLabel);
+    this.configurations.forEach((config) => {
+      this.data = this.data.concat(config.toByteArray());
+    });
+    return super.toByteArray();
+  }
+};
+var MemoryConfig = class {
+  label;
+  type;
+  keyboardStatus = 85 /* UNLOCKED */;
+  size;
+  lastFourBytes;
+  constructor(config) {
+    this.label = config.label || "A";
+    this.type = config.type || 65 /* TEXT */;
+    this.keyboardStatus = config.keyboardStatus || 85 /* UNLOCKED */;
+    this.size = config.size || "0000";
+    this.lastFourBytes = config.lastFourBytes || "0000";
+  }
+  toByteArray() {
+    if (this.size.length != 4) {
+      throw new Error("Size must be 4 characters long");
+    }
+    if (this.lastFourBytes.length != 4) {
+      throw new Error("Last four bytes must be 4 characters long");
+    }
+    return [FileLabels.get(this.label), this.type, this.keyboardStatus, ...this.size.toByteArray(), ...this.lastFourBytes.toByteArray()];
+  }
+};
 
 // src/commands/TextFile/ReadTextFileCommand.ts
 var ReadTextFileCommand = class extends Command {
@@ -789,6 +768,25 @@ File ${file.selectedText} written.
 `);
   }
 })();
+
+// src/commands/Beep.ts
+var SpeakerTone = /* @__PURE__ */ ((SpeakerTone2) => {
+  SpeakerTone2[SpeakerTone2["ON"] = 65] = "ON";
+  SpeakerTone2[SpeakerTone2["OFF"] = 66] = "OFF";
+  SpeakerTone2[SpeakerTone2["TONE"] = 48] = "TONE";
+  SpeakerTone2[SpeakerTone2["THREE_TONES"] = 49] = "THREE_TONES";
+  return SpeakerTone2;
+})(SpeakerTone || {});
+var BeepCommand = class extends TransmissionPacket {
+  BEEP_COMMAND = 40;
+  commandCode = 69 /* WRITE_SPECIAL_FUNCTION */;
+  speakerTone = 48 /* TONE */;
+  data = [this.BEEP_COMMAND];
+  toByteArray() {
+    this.data.push(this.speakerTone);
+    return super.toByteArray();
+  }
+};
 
 // src/commands/SetDay.ts
 var Day = /* @__PURE__ */ ((Day2) => {

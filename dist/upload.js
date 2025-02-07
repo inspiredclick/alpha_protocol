@@ -6,7 +6,7 @@ import {
   SignClient,
   WriteTextFileCommand,
   html
-} from "./chunk-VUNQZR3I.js";
+} from "./chunk-TSD6TOCL.js";
 
 // src/upload.ts
 import { promises as fs } from "fs";
