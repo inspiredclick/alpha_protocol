@@ -1,63 +1,3 @@
-"use strict";
-var __defProp = Object.defineProperty;
-var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
-var __getOwnPropNames = Object.getOwnPropertyNames;
-var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __export = (target, all) => {
-  for (var name in all)
-    __defProp(target, name, { get: all[name], enumerable: true });
-};
-var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
-      if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
-  }
-  return to;
-};
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
-
-// src/index.ts
-var src_exports = {};
-__export(src_exports, {
-  BeepCommand: () => BeepCommand,
-  Chars: () => Chars,
-  Color: () => Color,
-  Command: () => Command,
-  CommandCode: () => CommandCode,
-  Day: () => Day,
-  DisplayPosition: () => DisplayPosition2,
-  FileLabels: () => FileLabels,
-  GenericResponse: () => GenericResponse,
-  KeyboardStatus: () => KeyboardStatus,
-  MemoryConfig: () => MemoryConfig,
-  MemoryType: () => MemoryType,
-  ModeCode: () => ModeCode2,
-  ReadTextFileCommand: () => ReadTextFileCommand,
-  ReadTextFileResponse: () => ReadTextFileResponse,
-  Response: () => Response,
-  ResponseFactory: () => ResponseFactory,
-  ResponseFactoryError: () => ResponseFactoryError,
-  ResponseFactoryErrorCode: () => ResponseFactoryErrorCode,
-  SetDay: () => SetDay,
-  SetMemory: () => SetMemory,
-  SetSpeaker: () => SetSpeaker,
-  SetTime: () => SetTime,
-  SignClient: () => SignClient,
-  SpeakerTone: () => SpeakerTone,
-  SpecialFunctionLabel: () => SpecialFunctionLabel,
-  SpecialGraphics: () => SpecialGraphics,
-  TagParser: () => TagParser,
-  TransmissionPacket: () => TransmissionPacket,
-  TransmissionPacketFactory: () => TransmissionPacketFactory,
-  TypeCode: () => TypeCode2,
-  WriteSpecialFunctionCommand: () => WriteSpecialFunctionCommand,
-  WriteTextFileCommand: () => WriteTextFileCommand,
-  html: () => html,
-  text: () => text
-});
-module.exports = __toCommonJS(src_exports);
-
 // src/string.ts
 String.prototype.toByteArray = function() {
   const byteBuffer = [];
@@ -166,7 +106,7 @@ var BeepCommand = class extends TransmissionPacket {
 };
 
 // src/SignClient.ts
-var import_serialport = require("serialport");
+import { SerialPort } from "serialport";
 
 // src/commands/Response.ts
 var Response = class {
@@ -251,9 +191,9 @@ var ResponseFactory = class {
 };
 
 // src/SignClient.ts
-var import_stream = require("@serialport/stream");
-var import_stream2 = require("stream");
-var SignClientResponseParser = class extends import_stream2.Transform {
+import { SerialPortStream } from "@serialport/stream";
+import { Transform } from "stream";
+var SignClientResponseParser = class extends Transform {
   PACKET_START_BYTE_COUNT = 20;
   PACKET_START = Buffer.from(Array(this.PACKET_START_BYTE_COUNT).fill(0 /* NULL */));
   dataBuffer;
@@ -297,8 +237,8 @@ var SignClient = class {
   }
   async connect() {
     return new Promise((resolve, reject) => {
-      this.serial = new import_stream.SerialPortStream({
-        binding: this.binding || import_serialport.SerialPort.binding,
+      this.serial = new SerialPortStream({
+        binding: this.binding || SerialPort.binding,
         path: this.comPort,
         baudRate: this.baudRate
       }, (err) => {
@@ -695,199 +635,34 @@ var TransmissionPacket = class {
   }
 };
 
-// src/TransmissionPacketFactory.ts
-var TransmissionPacketFactory = class {
-  static DEFAULT_ADDRESS = "00";
-  static createPacketBytes(commandCode, data) {
-    let packet = Buffer.from([
-      0 /* NULL */,
-      0 /* NULL */,
-      0 /* NULL */,
-      0 /* NULL */,
-      0 /* NULL */,
-      1 /* START_OF_HEADER */,
-      90 /* ALL */,
-      ...this.DEFAULT_ADDRESS.toByteArray(),
-      2 /* START_OF_TEXT */
-    ]);
-    packet = Buffer.concat([packet, commandCode, data]);
-    packet = Buffer.concat([packet, Buffer.from([4 /* END_OF_TRANSMISSION */])]);
-    return packet;
-  }
-};
-
-// src/icli.ts
-var import_terminal_kit = require("terminal-kit");
-var import_serialport2 = require("serialport");
-
-// src/commands/TextFile/ReadTextFileCommand.ts
-var ReadTextFileCommand = class extends Command {
-  fileLabel;
-  commandCode = 66 /* READ_TEXT_FILE */;
-  expectsResponse = true;
-  constructor(fileLabel) {
-    super();
-    this.fileLabel = fileLabel;
-    this.data = [this.fileLabel];
-  }
-};
-
-// src/icli.ts
-(async () => {
-  import_terminal_kit.terminal.on("key", (key) => {
-    if (key === "CTRL_C") {
-      import_terminal_kit.terminal.clear();
-      import_terminal_kit.terminal.grabInput(false);
-      process.exit();
-    }
-  });
-  const portPaths = (await import_serialport2.SerialPort.list()).map((port) => port.path);
-  (0, import_terminal_kit.terminal)("Choose COM Port:\n");
-  const comPortReponse = await import_terminal_kit.terminal.singleColumnMenu(portPaths).promise;
-  const comPort = portPaths[comPortReponse.selectedIndex];
-  const client = await new SignClient(comPort).connect();
-  import_terminal_kit.terminal.green("Sign Connected.\n");
-  const setMemory = new SetMemory();
-  setMemory.configurations.push(new MemoryConfig({
-    size: "0400",
-    lastFourBytes: "FF00"
-  }));
-  await client.send(setMemory);
-  import_terminal_kit.terminal.green("Memory Configured\n\n");
-  import_terminal_kit.terminal.bold("AlphaProtocol Interactive CLI\n");
-  (0, import_terminal_kit.terminal)("(CTRL+C to Exit)\n\n\n");
-  while (true) {
-    (0, import_terminal_kit.terminal)("Open file:\n");
-    const files = FileLabels.keys();
-    const file = await import_terminal_kit.terminal.gridMenu(files).promise;
-    const fileAddress = FileLabels.get(file.selectedText);
-    const readTextFile = new ReadTextFileCommand(fileAddress);
-    let readTextFileResponse;
-    try {
-      readTextFileResponse = await client.send(readTextFile);
-    } catch (err) {
-      import_terminal_kit.terminal.red(`${err}
-
-`);
-      continue;
-    }
-    (0, import_terminal_kit.terminal)(`File ${file.selectedText} input:`);
-    const signText = await import_terminal_kit.terminal.inputField({
-      cancelable: true,
-      default: readTextFileResponse.text
-    }).promise;
-    if (signText === void 0) {
-      import_terminal_kit.terminal.red("Canceled");
-      continue;
-    }
-    const writeText = new WriteTextFileCommand(fileAddress);
-    writeText.append(text(signText));
-    await client.send(writeText);
-    import_terminal_kit.terminal.green(`
-File ${file.selectedText} written.
-
-`);
-  }
-})();
-
-// src/commands/SetDay.ts
-var Day = /* @__PURE__ */ ((Day2) => {
-  Day2[Day2["SUNDAY"] = 49] = "SUNDAY";
-  Day2[Day2["MONDAY"] = 50] = "MONDAY";
-  Day2[Day2["TUESDAY"] = 51] = "TUESDAY";
-  Day2[Day2["WEDNESDAY"] = 52] = "WEDNESDAY";
-  Day2[Day2["THURSDAY"] = 53] = "THURSDAY";
-  Day2[Day2["FRIDAY"] = 54] = "FRIDAY";
-  Day2[Day2["SATURDAY"] = 55] = "SATURDAY";
-  return Day2;
-})(Day || {});
-var SetDay = class extends WriteSpecialFunctionCommand {
-  specialFunctionLabel = 38 /* SET_DAY */;
-  day;
-  constructor(day) {
-    super();
-    this.day = day;
-  }
-  toByteArray() {
-    this.data = [this.specialFunctionLabel, this.day];
-    return super.toByteArray();
-  }
-};
-
-// src/commands/SetSpeaker.ts
-var SetSpeaker = class _SetSpeaker extends WriteSpecialFunctionCommand {
-  static ENABLE = 48;
-  static DISABLE = 70;
-  specialFunctionLabel = 33 /* SET_SPEAKER */;
-  speaker;
-  constructor(speaker) {
-    super();
-    this.speaker = speaker;
-  }
-  toByteArray() {
-    this.data.push(this.specialFunctionLabel);
-    this.data.push(this.speaker ? _SetSpeaker.ENABLE : _SetSpeaker.DISABLE);
-    return super.toByteArray();
-  }
-};
-
-// src/commands/SetTime.ts
-var SetTime = class extends WriteSpecialFunctionCommand {
-  specialFunctionLabel = 32 /* SET_TIME */;
-  hour;
-  minute;
-  constructor(hour, minute) {
-    super();
-    if (hour < 0 || hour > 23) throw new Error("hour must be between 0 and 23");
-    if (minute < 0 || minute > 59) throw new Error("minute must be between 0 and 59");
-    this.hour = hour;
-    this.minute = minute;
-  }
-  pad(num) {
-    return ("0" + num).slice(-2);
-  }
-  toByteArray() {
-    this.data.push(this.specialFunctionLabel);
-    this.data = this.data.concat(this.pad(this.hour).toByteArray());
-    this.data = this.data.concat(this.pad(this.minute).toByteArray());
-    return super.toByteArray();
-  }
-};
-// Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
+export {
+  TransmissionPacket,
+  Command,
+  WriteTextFileCommand,
+  SpeakerTone,
   BeepCommand,
+  Response,
+  GenericResponse,
+  ReadTextFileResponse,
+  ResponseFactoryErrorCode,
+  ResponseFactoryError,
+  ResponseFactory,
+  SignClient,
+  TagParser,
+  text,
+  html,
+  FileLabels,
+  DisplayPosition2 as DisplayPosition,
+  ModeCode2 as ModeCode,
+  SpecialGraphics,
+  TypeCode2 as TypeCode,
+  CommandCode,
   Chars,
   Color,
-  Command,
-  CommandCode,
-  Day,
-  DisplayPosition,
-  FileLabels,
-  GenericResponse,
-  KeyboardStatus,
-  MemoryConfig,
-  MemoryType,
-  ModeCode,
-  ReadTextFileCommand,
-  ReadTextFileResponse,
-  Response,
-  ResponseFactory,
-  ResponseFactoryError,
-  ResponseFactoryErrorCode,
-  SetDay,
-  SetMemory,
-  SetSpeaker,
-  SetTime,
-  SignClient,
-  SpeakerTone,
   SpecialFunctionLabel,
-  SpecialGraphics,
-  TagParser,
-  TransmissionPacket,
-  TransmissionPacketFactory,
-  TypeCode,
   WriteSpecialFunctionCommand,
-  WriteTextFileCommand,
-  html,
-  text
-});
+  MemoryType,
+  KeyboardStatus,
+  SetMemory,
+  MemoryConfig
+};

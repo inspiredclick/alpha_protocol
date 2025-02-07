@@ -1,9 +1,7 @@
-import { CommandCode } from "../types";
+import { CommandCode, FileLabels } from "../types";
 import { SpecialFunctionLabel, WriteSpecialFunctionCommand } from "./WriteSpecialFunctionCommand";
 
-export enum MemoryLabel {
-    A = 0x41
-}
+export type MemoryLabel = string;
 
 export enum MemoryType {
     TEXT = 0x41,
@@ -38,7 +36,7 @@ export class MemoryConfig {
     lastFourBytes: string;
 
     constructor(config: {label?: MemoryLabel, type?: MemoryType, keyboardStatus?: KeyboardStatus, size?: string, lastFourBytes?: string}) {
-        this.label = config.label || MemoryLabel.A;
+        this.label = config.label || "A";
         this.type = config.type || MemoryType.TEXT;
         this.keyboardStatus = config.keyboardStatus || KeyboardStatus.UNLOCKED;
         this.size = config.size || "0000";
@@ -52,6 +50,6 @@ export class MemoryConfig {
         if (this.lastFourBytes.length != 4) {
             throw new Error("Last four bytes must be 4 characters long");
         }
-        return [this.label, this.type, this.keyboardStatus, ...this.size.toByteArray(), ...this.lastFourBytes.toByteArray()];
+        return [FileLabels.get(this.label), this.type, this.keyboardStatus, ...this.size.toByteArray(), ...this.lastFourBytes.toByteArray()];
     }
 }

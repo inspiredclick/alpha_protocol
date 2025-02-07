@@ -20,6 +20,30 @@ export class FileLabels {
         {
             text: "B",
             address: 0x42
+        },
+        {
+            text: "C",
+            address: 0x43
+        },
+        {
+            text: "D",
+            address: 0x44
+        },
+        {
+            text: "E",
+            address: 0x45
+        },
+        {
+            text: "F",
+            address: 0x46
+        },
+        {
+            text: "G",
+            address: 0x47
+        },
+        {
+            text: "H",
+            address: 0x48
         }
     ];
 

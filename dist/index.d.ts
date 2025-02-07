@@ -16,9 +16,7 @@ declare abstract class WriteSpecialFunctionCommand extends Command {
     abstract specialFunctionLabel: SpecialFunctionLabel;
 }
 
-declare enum MemoryLabel {
-    A = 65
-}
+type MemoryLabel = string;
 declare enum MemoryType {
     TEXT = 65,
     STRING = 66,
@@ -210,6 +208,15 @@ declare class TransmissionPacketFactory {
     static createPacketBytes(commandCode: Buffer, data: Buffer): Buffer;
 }
 
+interface Tag {
+    tagName: string;
+    attributes: {
+        displayPosition?: DisplayPosition;
+        mode?: ModeCode;
+        color?: Color;
+    };
+    content: string;
+}
 declare class TagParser {
     private static readonly tagRegex;
     private static readonly attributeRegex;
@@ -220,4 +227,75 @@ declare class TagParser {
     private static parseColor;
 }
 
-export { BeepCommand, Chars, Color, CommandCode, DisplayPosition, type FileLabel, FileLabels, ModeCode, SetMemory, SignClient, SpeakerTone, SpecialGraphics, TagParser, TransmissionPacket, TransmissionPacketFactory, TypeCode, WriteTextFileCommand, html, text };
+declare class Response {
+}
+declare class GenericResponse extends Response {
+}
+
+declare enum ResponseFactoryErrorCode {
+    INVALID_PACKET = 0,
+    MALFORMED_PACKET = 1,
+    ERROR = 2
+}
+declare class ResponseFactoryError extends Error {
+    code: ResponseFactoryErrorCode;
+    constructor(code: ResponseFactoryErrorCode, message?: string);
+}
+declare class ResponseFactory {
+    static parse(buffer: Buffer): Response;
+}
+
+declare enum Day {
+    SUNDAY = 49,
+    MONDAY = 50,
+    TUESDAY = 51,
+    WEDNESDAY = 52,
+    THURSDAY = 53,
+    FRIDAY = 54,
+    SATURDAY = 55
+}
+declare class SetDay extends WriteSpecialFunctionCommand {
+    specialFunctionLabel: SpecialFunctionLabel;
+    day: Day;
+    constructor(day: Day);
+    toByteArray(): number[];
+}
+
+declare class SetSpeaker extends WriteSpecialFunctionCommand {
+    static readonly ENABLE = 48;
+    static readonly DISABLE = 70;
+    specialFunctionLabel: SpecialFunctionLabel;
+    speaker: boolean;
+    constructor(speaker: boolean);
+    toByteArray(): number[];
+}
+
+declare class SetTime extends WriteSpecialFunctionCommand {
+    specialFunctionLabel: SpecialFunctionLabel;
+    hour: number;
+    minute: number;
+    constructor(hour: number, minute: number);
+    private pad;
+    toByteArray(): number[];
+}
+
+declare class ReadTextFileCommand extends Command {
+    private fileLabel;
+    commandCode: CommandCode;
+    expectsResponse: boolean;
+    constructor(fileLabel: FileLabel);
+}
+
+declare class ReadTextFileResponse extends TransmissionPacket {
+    commandCode: CommandCode;
+    private packetPosition;
+    private fileLabel;
+    private displayPosition;
+    private modeCode;
+    private specialIdentifier?;
+    private processedText;
+    constructor(data: number[], packetPosition: number);
+    get text(): string;
+}
+
+export { BeepCommand, Chars, Color, Command, CommandCode, Day, DisplayPosition, type FileLabel, FileLabels, GenericResponse, KeyboardStatus, MemoryConfig, type MemoryLabel, MemoryType, ModeCode, ReadTextFileCommand, ReadTextFileResponse, Response, ResponseFactory, ResponseFactoryError, ResponseFactoryErrorCode, SetDay, SetMemory, SetSpeaker, SetTime, SignClient, SpeakerTone, SpecialFunctionLabel, SpecialGraphics, type Tag, TagParser, TransmissionPacket, TransmissionPacketFactory, TypeCode, WriteSpecialFunctionCommand, WriteTextFileCommand, html, text };
