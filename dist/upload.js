@@ -28,36 +28,34 @@ import * as path from "path";
   console.log(`Connected: ${client.isOpen()}`);
   const fileList = ["A", "B", "C", "D", "E", "F", "G", "H"];
   const files = config["files"];
+  const setMemory = new SetMemory();
   for (let i = 0; i < fileList.length; i++) {
     const file = fileList[i];
+    console.log(`Configuring Memory for File ${file}`);
+    let fileSize = "0000";
     if (i < files.length) {
-      console.log(`Uploading File ${file}`);
-      const setMemory = new SetMemory();
-      setMemory.configurations.push(new MemoryConfig({
-        label: file,
-        size: "0000",
-        lastFourBytes: "FF00"
-      }));
-      await client.send(setMemory);
-      console.log("Memory configured");
-      const fileData = files[i]["content"];
+      fileSize = "0400";
+    }
+    setMemory.configurations.push(new MemoryConfig({
+      label: file,
+      size: fileSize,
+      lastFourBytes: "FF00"
+    }));
+  }
+  console.log("Sending memory configuration");
+  await client.send(setMemory);
+  console.log("Memory configured");
+  for (let i = 0; i < fileList.length; i++) {
+    const file = fileList[i];
+    console.log(`Writing File ${file}`);
+    if (i < files.length) {
       const writeFile = new WriteTextFileCommand(FileLabels.get(file));
-      writeFile.append(html(fileData));
+      writeFile.append(html(files[i]["content"]));
       await client.send(writeFile);
       console.log("Text written");
-    } else {
-      console.log(`File ${file} not uploaded`);
-      const setMemory = new SetMemory();
-      setMemory.configurations.push(new MemoryConfig({
-        label: file,
-        size: "0000",
-        lastFourBytes: "FF00"
-      }));
-      await client.send(setMemory);
-      console.log("Memory configured");
     }
-    const beep = new BeepCommand();
-    await client.send(beep);
-    console.log("Beep sent");
   }
+  const beep = new BeepCommand();
+  await client.send(beep);
+  console.log("Beep sent");
 })();
