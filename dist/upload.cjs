@@ -554,7 +554,6 @@ function html(text2) {
     const filePath = args[0] || path.join(__dirname, "config.json");
     const data = await import_fs.promises.readFile(filePath, "utf-8");
     config = JSON.parse(data);
-    console.log(config);
   } catch (error) {
     console.error("Error reading the JSON file:", error);
     process.exit(1);
@@ -586,7 +585,11 @@ function html(text2) {
     console.log(`Writing File ${file}`);
     if (i < files.length) {
       const writeFile = new WriteTextFileCommand(FileLabels.get(file));
-      writeFile.append(html(files[i]["content"]));
+      if (files[i]["type"] === "html") {
+        writeFile.append(html(files[i]["content"]));
+      } else if (files[i]["type"] === "text") {
+        writeFile.append(text(files[i]["content"]));
+      }
       await client.send(writeFile);
       console.log("Text written");
     }
@@ -594,4 +597,5 @@ function html(text2) {
   const beep = new BeepCommand();
   await client.send(beep);
   console.log("Beep sent");
+  process.exit();
 })();

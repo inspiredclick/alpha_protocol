@@ -168,6 +168,10 @@ declare function text(text: string, config?: {
     color?: Color;
 }): number[];
 declare function html(text: string): number[];
+declare function icon(icon: SpecialGraphics, config?: {
+    displayPosition?: DisplayPosition;
+    color?: Color;
+}): number[];
 
 declare enum SpeakerTone {
     ON = 65,
@@ -297,4 +301,4 @@ declare class ReadTextFileResponse extends TransmissionPacket {
     get text(): string;
 }
 
-export { BeepCommand, Chars, Color, Command, CommandCode, Day, DisplayPosition, type FileLabel, FileLabels, GenericResponse, KeyboardStatus, MemoryConfig, type MemoryLabel, MemoryType, ModeCode, ReadTextFileCommand, ReadTextFileResponse, Response, ResponseFactory, ResponseFactoryError, ResponseFactoryErrorCode, SetDay, SetMemory, SetSpeaker, SetTime, SignClient, SpeakerTone, SpecialFunctionLabel, SpecialGraphics, type Tag, TagParser, TransmissionPacket, TransmissionPacketFactory, TypeCode, WriteSpecialFunctionCommand, WriteTextFileCommand, html, text };
+export { BeepCommand, Chars, Color, Command, CommandCode, Day, DisplayPosition, type FileLabel, FileLabels, GenericResponse, KeyboardStatus, MemoryConfig, type MemoryLabel, MemoryType, ModeCode, ReadTextFileCommand, ReadTextFileResponse, Response, ResponseFactory, ResponseFactoryError, ResponseFactoryErrorCode, SetDay, SetMemory, SetSpeaker, SetTime, SignClient, SpeakerTone, SpecialFunctionLabel, SpecialGraphics, type Tag, TagParser, TransmissionPacket, TransmissionPacketFactory, TypeCode, WriteSpecialFunctionCommand, WriteTextFileCommand, html, icon, text };

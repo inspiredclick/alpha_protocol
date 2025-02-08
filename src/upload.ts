@@ -5,7 +5,7 @@ import { SetMemory, MemoryConfig } from './commands/SetMemory';
 import { FileLabels } from './types';
 import { WriteTextFileCommand } from './commands/TextFile/WriteTextFileCommand';
 import { BeepCommand } from './commands/Beep';
-import { html } from './elements';
+import { html, text } from './elements';
 
 (async () => {
   let config = null;
@@ -19,9 +19,6 @@ import { html } from './elements';
 
     // Parse the JSON data
     config = JSON.parse(data);
-
-    // Use the config data
-    console.log(config);
   } catch (error) {
     console.error('Error reading the JSON file:', error);
     process.exit(1);
@@ -56,7 +53,12 @@ import { html } from './elements';
     console.log(`Writing File ${file}`);
     if (i < files.length) {
       const writeFile = new WriteTextFileCommand(FileLabels.get(file));
-      writeFile.append(html(files[i]['content']));
+      if (files[i]['type'] === "html") {
+        writeFile.append(html(files[i]['content']));
+      }
+      else if (files[i]['type'] === "text") {
+        writeFile.append(text(files[i]['content']));
+      }
       await client.send(writeFile);
       console.log("Text written");
     }
@@ -65,4 +67,5 @@ import { html } from './elements';
   const beep = new BeepCommand();
   await client.send(beep);
   console.log("Beep sent");
+  process.exit();
 })();

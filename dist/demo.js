@@ -7,7 +7,7 @@ import {
   WriteTextFileCommand,
   html,
   text
-} from "./chunk-TSD6TOCL.js";
+} from "./chunk-IS5DVKHA.js";
 
 // src/demo.ts
 import { SerialPort } from "serialport";

@@ -76,15 +76,15 @@ var ModeCode = /* @__PURE__ */ ((ModeCode3) => {
   ModeCode3[ModeCode3["SPECIAL"] = 110] = "SPECIAL";
   return ModeCode3;
 })(ModeCode || {});
-var SpecialGraphics = /* @__PURE__ */ ((SpecialGraphics2) => {
-  SpecialGraphics2[SpecialGraphics2["THANK_YOU"] = 83] = "THANK_YOU";
-  SpecialGraphics2[SpecialGraphics2["NO_SMOKING"] = 85] = "NO_SMOKING";
-  SpecialGraphics2[SpecialGraphics2["DONT_DRINK_DRIVE"] = 86] = "DONT_DRINK_DRIVE";
-  SpecialGraphics2[SpecialGraphics2["RUNNING_ANIMAL"] = 87] = "RUNNING_ANIMAL";
-  SpecialGraphics2[SpecialGraphics2["FIREWORKS"] = 88] = "FIREWORKS";
-  SpecialGraphics2[SpecialGraphics2["TURBO_CAR"] = 89] = "TURBO_CAR";
-  SpecialGraphics2[SpecialGraphics2["CHERRY_BOMB"] = 90] = "CHERRY_BOMB";
-  return SpecialGraphics2;
+var SpecialGraphics = /* @__PURE__ */ ((SpecialGraphics3) => {
+  SpecialGraphics3[SpecialGraphics3["THANK_YOU"] = 83] = "THANK_YOU";
+  SpecialGraphics3[SpecialGraphics3["NO_SMOKING"] = 85] = "NO_SMOKING";
+  SpecialGraphics3[SpecialGraphics3["DONT_DRINK_DRIVE"] = 86] = "DONT_DRINK_DRIVE";
+  SpecialGraphics3[SpecialGraphics3["RUNNING_ANIMAL"] = 87] = "RUNNING_ANIMAL";
+  SpecialGraphics3[SpecialGraphics3["FIREWORKS"] = 88] = "FIREWORKS";
+  SpecialGraphics3[SpecialGraphics3["TURBO_CAR"] = 89] = "TURBO_CAR";
+  SpecialGraphics3[SpecialGraphics3["CHERRY_BOMB"] = 90] = "CHERRY_BOMB";
+  return SpecialGraphics3;
 })(SpecialGraphics || {});
 var TypeCode = /* @__PURE__ */ ((TypeCode3) => {
   TypeCode3[TypeCode3["ALL"] = 90] = "ALL";
@@ -611,6 +611,18 @@ function text(text2, config) {
 function html(text2) {
   return TagParser.parse(text2);
 }
+function icon(icon2, config) {
+  const output = [];
+  const displayPosition = config?.displayPosition || 32 /* MIDDLE_LINE */;
+  const color = config?.color || 57 /* RAINBOW_1 */;
+  output.push(27 /* MODE_FIELD */);
+  output.push(displayPosition);
+  output.push(110 /* SPECIAL */);
+  output.push(28 /* COLOR_FIELD */);
+  output.push(color);
+  output.push(icon2);
+  return output;
+}
 
 // src/commands/Beep.ts
 var SpeakerTone = /* @__PURE__ */ ((SpeakerTone2) => {
@@ -659,6 +671,7 @@ export {
   TagParser,
   text,
   html,
+  icon,
   SpeakerTone,
   BeepCommand
 };

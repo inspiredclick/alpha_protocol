@@ -27,8 +27,9 @@ import {
   WriteSpecialFunctionCommand,
   WriteTextFileCommand,
   html,
+  icon,
   text
-} from "./chunk-TSD6TOCL.js";
+} from "./chunk-IS5DVKHA.js";
 
 // src/TransmissionPacketFactory.ts
 var TransmissionPacketFactory = class {
@@ -225,5 +226,6 @@ export {
   WriteSpecialFunctionCommand,
   WriteTextFileCommand,
   html,
+  icon,
   text
 };

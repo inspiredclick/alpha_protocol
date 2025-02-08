@@ -1,4 +1,4 @@
-import { Chars, Color, DisplayPosition, ModeCode } from './types'
+import { Chars, Color, DisplayPosition, ModeCode, SpecialGraphics } from './types'
 import './string'
 
 export interface Tag {
@@ -171,15 +171,15 @@ export function html(text: string): number[] {
     return TagParser.parse(text);
 }
 
-// export function icon(icon: SpecialGraphics, config?: {displayPosition?: DisplayPosition, color?: Color}): number[] {
-//     let output:number[] = [];
-//     let displayPosition = config?.displayPosition || DisplayPosition.MIDDLE_LINE;
-//     let color = config?.color || Color.RAINBOW_1;
-//     output.push(Chars.MODE_FIELD);
-//     output.push(displayPosition);
-//     output.push(ModeCode.SPECIAL);
-//     output.push(Chars.COLOR_FIELD);
-//     output.push(color);
-//     output.push(icon);
-//     return output;
-// }
+export function icon(icon: SpecialGraphics, config?: {displayPosition?: DisplayPosition, color?: Color}): number[] {
+    const output:number[] = [];
+    const displayPosition = config?.displayPosition || DisplayPosition.MIDDLE_LINE;
+    const color = config?.color || Color.RAINBOW_1;
+    output.push(Chars.MODE_FIELD);
+    output.push(displayPosition);
+    output.push(ModeCode.SPECIAL);
+    output.push(Chars.COLOR_FIELD);
+    output.push(color);
+    output.push(icon);
+    return output;
+}
