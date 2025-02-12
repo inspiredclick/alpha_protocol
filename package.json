@@ -16,6 +16,7 @@
     "lint": "npx eslint ./src",
     "demo": "npm run build && node ./dist/demo.js",
     "icli": "npm run build && node ./dist/icli.js",
+    "upload": "npm run build && node ./dist/upload.js",
     "postinstall": "npm run build",
     "prepublish": "npm run build"
   },

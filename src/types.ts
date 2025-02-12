@@ -1,13 +1,5 @@
-import { SetMemory } from "./commands/SetMemory";
-export { SetMemory };
-import { WriteTextFileCommand } from "./commands/TextFile/WriteTextFileCommand";
-export { WriteTextFileCommand };
-import { BeepCommand, SpeakerTone } from "./commands/Beep";
-export { BeepCommand, SpeakerTone };
-import { SignClient } from "./SignClient";
-export { SignClient };
-import { text, html } from "./elements";
-export { text, html };
+// import { text, html } from "./elements";
+// export { text, html };
 
 /* eslint-disable @typescript-eslint/no-duplicate-enum-values */
 export type FileLabel = number;
@@ -20,6 +12,30 @@ export class FileLabels {
         {
             text: "B",
             address: 0x42
+        },
+        {
+            text: "C",
+            address: 0x43
+        },
+        {
+            text: "D",
+            address: 0x44
+        },
+        {
+            text: "E",
+            address: 0x45
+        },
+        {
+            text: "F",
+            address: 0x46
+        },
+        {
+            text: "G",
+            address: 0x47
+        },
+        {
+            text: "H",
+            address: 0x48
         }
     ];
 

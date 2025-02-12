@@ -2,109 +2,6 @@ import { SerialPortStream } from '@serialport/stream';
 import { BindingInterface } from '@serialport/bindings-interface';
 import { Transform, TransformCallback } from 'stream';
 
-declare abstract class Command extends TransmissionPacket {
-}
-
-declare enum SpecialFunctionLabel {
-    SET_TIME = 32,
-    SET_SPEAKER = 33,
-    SET_MEMORY = 36,
-    SET_DAY = 38
-}
-declare abstract class WriteSpecialFunctionCommand extends Command {
-    commandCode: CommandCode;
-    abstract specialFunctionLabel: SpecialFunctionLabel;
-}
-
-declare enum MemoryLabel {
-    A = 65
-}
-declare enum MemoryType {
-    TEXT = 65,
-    STRING = 66,
-    DOTS = 67
-}
-declare enum KeyboardStatus {
-    UNLOCKED = 85,
-    LOCKED = 76
-}
-declare class SetMemory extends WriteSpecialFunctionCommand {
-    specialFunctionLabel: SpecialFunctionLabel;
-    commandCode: CommandCode;
-    configurations: MemoryConfig[];
-    toByteArray(): number[];
-}
-declare class MemoryConfig {
-    label: MemoryLabel;
-    type: MemoryType;
-    keyboardStatus: KeyboardStatus;
-    size: string;
-    lastFourBytes: string;
-    constructor(config: {
-        label?: MemoryLabel;
-        type?: MemoryType;
-        keyboardStatus?: KeyboardStatus;
-        size?: string;
-        lastFourBytes?: string;
-    });
-    toByteArray(): number[];
-}
-
-declare class WriteTextFileCommand extends Command {
-    private fileLabel;
-    commandCode: CommandCode;
-    constructor(fileLabel?: FileLabel);
-    append(data: number[]): void;
-}
-
-declare enum SpeakerTone {
-    ON = 65,
-    OFF = 66,
-    TONE = 48,
-    THREE_TONES = 49
-}
-declare class BeepCommand extends TransmissionPacket {
-    readonly BEEP_COMMAND = 40;
-    commandCode: CommandCode;
-    speakerTone: SpeakerTone;
-    data: number[];
-    toByteArray(): number[];
-}
-
-declare class SignClientResponseParser extends Transform {
-    private readonly PACKET_START_BYTE_COUNT;
-    private readonly PACKET_START;
-    private dataBuffer;
-    private inPacket;
-    constructor();
-    _transform(chunk: any, encoding: BufferEncoding, callback: TransformCallback): void;
-}
-declare class SignClient {
-    private readonly DEFAULT_BAUD_RATE;
-    private readonly DEFAULT_TIMEOUT;
-    private readonly DEFAULT_DATA_PAUSE;
-    comPort: string;
-    baudRate: number;
-    serial?: SerialPortStream;
-    parser?: SignClientResponseParser;
-    private binding?;
-    private timeoutMs;
-    private timeout?;
-    private dataPauseMs;
-    constructor(comPort: string, baudRate?: number, binding?: BindingInterface, timeout?: number, dataPause?: number);
-    connect(): Promise<SignClient>;
-    send<T extends TransmissionPacket>(packet: TransmissionPacket): Promise<T>;
-    private sendPacket;
-    isOpen(): boolean;
-}
-
-declare function text(text: string, config?: {
-    displayPosition?: DisplayPosition;
-    modeCode?: ModeCode;
-    color?: Color;
-}): number[];
-declare function html(text: string): number[];
-
 type FileLabel = number;
 declare class FileLabels {
     private static LABELS;
@@ -210,6 +107,52 @@ declare class TransmissionPacketFactory {
     static createPacketBytes(commandCode: Buffer, data: Buffer): Buffer;
 }
 
+declare abstract class Command extends TransmissionPacket {
+}
+
+declare class WriteTextFileCommand extends Command {
+    private fileLabel;
+    commandCode: CommandCode;
+    constructor(fileLabel?: FileLabel);
+    append(data: number[]): void;
+}
+
+declare class SignClientResponseParser extends Transform {
+    private readonly PACKET_START_BYTE_COUNT;
+    private readonly PACKET_START;
+    private dataBuffer;
+    private inPacket;
+    constructor();
+    _transform(chunk: any, encoding: BufferEncoding, callback: TransformCallback): void;
+}
+declare class SignClient {
+    private readonly DEFAULT_BAUD_RATE;
+    private readonly DEFAULT_TIMEOUT;
+    private readonly DEFAULT_DATA_PAUSE;
+    comPort: string;
+    baudRate: number;
+    serial?: SerialPortStream;
+    parser?: SignClientResponseParser;
+    private binding?;
+    private timeoutMs;
+    private timeout?;
+    private dataPauseMs;
+    constructor(comPort: string, baudRate?: number, binding?: BindingInterface, timeout?: number, dataPause?: number);
+    connect(): Promise<SignClient>;
+    send<T extends TransmissionPacket>(packet: TransmissionPacket): Promise<T>;
+    private sendPacket;
+    isOpen(): boolean;
+}
+
+interface Tag {
+    tagName: string;
+    attributes: {
+        displayPosition?: DisplayPosition;
+        mode?: ModeCode;
+        color?: Color;
+    };
+    content: string;
+}
 declare class TagParser {
     private static readonly tagRegex;
     private static readonly attributeRegex;
@@ -219,5 +162,143 @@ declare class TagParser {
     private static parseMode;
     private static parseColor;
 }
+declare function text(text: string, config?: {
+    displayPosition?: DisplayPosition;
+    modeCode?: ModeCode;
+    color?: Color;
+}): number[];
+declare function html(text: string): number[];
+declare function icon(icon: SpecialGraphics, config?: {
+    displayPosition?: DisplayPosition;
+    color?: Color;
+}): number[];
 
-export { BeepCommand, Chars, Color, CommandCode, DisplayPosition, type FileLabel, FileLabels, ModeCode, SetMemory, SignClient, SpeakerTone, SpecialGraphics, TagParser, TransmissionPacket, TransmissionPacketFactory, TypeCode, WriteTextFileCommand, html, text };
+declare enum SpeakerTone {
+    ON = 65,
+    OFF = 66,
+    TONE = 48,
+    THREE_TONES = 49
+}
+declare class BeepCommand extends TransmissionPacket {
+    readonly BEEP_COMMAND = 40;
+    commandCode: CommandCode;
+    speakerTone: SpeakerTone;
+    data: number[];
+    toByteArray(): number[];
+}
+
+declare class Response {
+}
+declare class GenericResponse extends Response {
+}
+
+declare enum ResponseFactoryErrorCode {
+    INVALID_PACKET = 0,
+    MALFORMED_PACKET = 1,
+    ERROR = 2
+}
+declare class ResponseFactoryError extends Error {
+    code: ResponseFactoryErrorCode;
+    constructor(code: ResponseFactoryErrorCode, message?: string);
+}
+declare class ResponseFactory {
+    static parse(buffer: Buffer): Response;
+}
+
+declare enum SpecialFunctionLabel {
+    SET_TIME = 32,
+    SET_SPEAKER = 33,
+    SET_MEMORY = 36,
+    SET_DAY = 38
+}
+declare abstract class WriteSpecialFunctionCommand extends Command {
+    commandCode: CommandCode;
+    abstract specialFunctionLabel: SpecialFunctionLabel;
+}
+
+declare enum Day {
+    SUNDAY = 49,
+    MONDAY = 50,
+    TUESDAY = 51,
+    WEDNESDAY = 52,
+    THURSDAY = 53,
+    FRIDAY = 54,
+    SATURDAY = 55
+}
+declare class SetDay extends WriteSpecialFunctionCommand {
+    specialFunctionLabel: SpecialFunctionLabel;
+    day: Day;
+    constructor(day: Day);
+    toByteArray(): number[];
+}
+
+type MemoryLabel = string;
+declare enum MemoryType {
+    TEXT = 65,
+    STRING = 66,
+    DOTS = 67
+}
+declare enum KeyboardStatus {
+    UNLOCKED = 85,
+    LOCKED = 76
+}
+declare class SetMemory extends WriteSpecialFunctionCommand {
+    specialFunctionLabel: SpecialFunctionLabel;
+    commandCode: CommandCode;
+    configurations: MemoryConfig[];
+    toByteArray(): number[];
+}
+declare class MemoryConfig {
+    label: MemoryLabel;
+    type: MemoryType;
+    keyboardStatus: KeyboardStatus;
+    size: string;
+    lastFourBytes: string;
+    constructor(config: {
+        label?: MemoryLabel;
+        type?: MemoryType;
+        keyboardStatus?: KeyboardStatus;
+        size?: string;
+        lastFourBytes?: string;
+    });
+    toByteArray(): number[];
+}
+
+declare class SetSpeaker extends WriteSpecialFunctionCommand {
+    static readonly ENABLE = 48;
+    static readonly DISABLE = 70;
+    specialFunctionLabel: SpecialFunctionLabel;
+    speaker: boolean;
+    constructor(speaker: boolean);
+    toByteArray(): number[];
+}
+
+declare class SetTime extends WriteSpecialFunctionCommand {
+    specialFunctionLabel: SpecialFunctionLabel;
+    hour: number;
+    minute: number;
+    constructor(hour: number, minute: number);
+    private pad;
+    toByteArray(): number[];
+}
+
+declare class ReadTextFileCommand extends Command {
+    private fileLabel;
+    commandCode: CommandCode;
+    expectsResponse: boolean;
+    constructor(fileLabel: FileLabel);
+}
+
+declare class ReadTextFileResponse extends TransmissionPacket {
+    commandCode: CommandCode;
+    private packetPosition;
+    private fileLabel;
+    private displayPosition;
+    private modeCode;
+    private specialIdentifier?;
+    private processedText;
+    constructor(data: number[], packetPosition: number);
+    get text(): string;
+}
+
+export { BeepCommand, Chars, Color, Command, CommandCode, Day, DisplayPosition, type FileLabel, FileLabels, GenericResponse, KeyboardStatus, MemoryConfig, type MemoryLabel, MemoryType, ModeCode, ReadTextFileCommand, ReadTextFileResponse, Response, ResponseFactory, ResponseFactoryError, ResponseFactoryErrorCode, SetDay, SetMemory, SetSpeaker, SetTime, SignClient, SpeakerTone, SpecialFunctionLabel, SpecialGraphics, type Tag, TagParser, TransmissionPacket, TransmissionPacketFactory, TypeCode, WriteSpecialFunctionCommand, WriteTextFileCommand, html, icon, text };
