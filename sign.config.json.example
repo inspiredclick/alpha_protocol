@@ -1,0 +1,8 @@
+
+{
+  "com_port": "COM3",
+  "baud_rate": 115200,
+  "files": [
+    {"type": "html", "content":"<message position=\"top_line\" color=\"red\">Hello world</message>"}
+  ]
+}
